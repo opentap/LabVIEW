@@ -1,0 +1,56 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+*.exe
+*.out
+**/dist
+**/tmp
+# profiling files
+chrome-profiler-events*.json
+speed-measure-plugin*.json
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+# System Files
+.DS_Store
+Thumbs.db
+*_i.c
+*_p.c
+*_i.h
+*.ilk
+*.meta
+*.obj
+*.pch
+*.pdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+*.suo
+*.app
+**/bin
+**/obj
+**/.vs
+**/.config
+**/node_modules
+# electron output file
+**/release
+/packages
+/publish
