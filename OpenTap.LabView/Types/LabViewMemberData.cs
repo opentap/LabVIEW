@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-namespace OpenTap.Plugins.LabView
+using NationalInstruments.LabVIEW.Interop;
+namespace OpenTap.LabView.Types
 {
     public class LabViewMemberData : IMemberData
     {
@@ -19,6 +20,17 @@ namespace OpenTap.Plugins.LabView
             Name = parameterInfo.Name;
             DeclaringType = labViewTypeData;
             TypeDescriptor = TypeData.FromType(parameterInfo.ParameterType);
+            
+            // Generally Out parameters are marked ith a &. These we can just handle
+            // by their underlying type. we know that they are references in the call.
+            if (parameterInfo.IsOut && parameterInfo.ParameterType.Name == "String&")
+                TypeDescriptor = TypeData.FromType(typeof(string));
+            if (parameterInfo.IsOut && parameterInfo.ParameterType.Name == "Int32&")
+                TypeDescriptor = TypeData.FromType(typeof(int));
+            
+            // if its a resource class we need to use the wrapper class.
+            if (TypeDescriptor.DescendsTo(typeof(LVClassRoot)))
+                TypeDescriptor = new LabViewTypeData(((TypeData)TypeDescriptor).Type);
             Writable = true;
             Readable = true;
         }

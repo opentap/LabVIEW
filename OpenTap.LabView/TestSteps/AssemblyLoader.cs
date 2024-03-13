@@ -4,14 +4,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Windows.Forms;
-using static InteropAssembly.Demant__46ServiceFoo;
 
-
-namespace OpenTap.Plugins.LabviewInterop
+namespace OpenTap.LabView
 {
-    [Display("Load Assembly", Group: "OpenTap.Plugins.LabviewInterop", Description: "Load Assembly from Labview VI Interop")]
-    public class AssemblyLoaderStep : TestStep
+    [Display("Load Assembly", Group: "LabVIEW", Description: "Load Assembly from Labview VI Interop")]
+    class AssemblyLoaderStep : TestStep
     {
         #region Settings
         // ToDo: Add property here for each parameter the end user should be able to change.
@@ -27,17 +24,13 @@ namespace OpenTap.Plugins.LabviewInterop
         [Browsable(true)]
         public void Button_Clicked()
         {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.Filter = "Assembly Files (*.dll, *.exe)|*.dll;*.exe|All files (*.*)|*.*";
-            openFileDialog1.FilterIndex = 1;
-            openFileDialog1.RestoreDirectory = true;
+            
 
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 _listOfAvailableText.Clear();
                 _listOfAvailableValues.Clear();
 
-                assemblyPath = openFileDialog1.FileName;
+                assemblyPath = "test.dll";
 
                 // Load the assembly
                 _assembly = Assembly.LoadFrom(assemblyPath);
@@ -148,7 +141,7 @@ namespace OpenTap.Plugins.LabviewInterop
 
                 if (selectedMethod.GetParameters().Count(x => x.ParameterType.Name == "Qry") != 0)
                 {
-                    objList.Add(new Qry());
+                    //objList.Add(new Qry());
                 }
 
                 object[] parameters2 = getParameters(selectedMethod, objList.ToArray());
