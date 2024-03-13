@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <OpenTapPackageDefinitionPath>package.xml</OpenTapPackageDefinitionPath>
+    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AdditionalOpenTapPackage Include="TUI" Version="1" />
+    <AdditionalOpenTapPackage Include="Editor"/>
+    <InternalsVisibleTo Include="OpenTap.LabView.UnitTests"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OpenTAP" Version="$(OpenTapVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="InteropAssembly">
+      <HintPath>Dependency\InteropAssembly.dll</HintPath>
+    </Reference>
+    <Reference Include="NationalInstruments.LabVIEW.Interop">
+      <HintPath>../Dependency/NationalInstruments.LabVIEW.Interop.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\Dependency\InteropAssembly.dll">
+      <Link>InteropAssembly.dll</Link>
+    </Content>
+  </ItemGroup>
+
+</Project>

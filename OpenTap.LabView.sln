@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33712.159
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTap.LabView", "OpenTap.LabView\OpenTap.LabView.csproj", "{C1760C0B-F69D-416F-807B-F37797C6377E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTap.LabView.UnitTests", "OpenTap.LabView.UnitTests\OpenTap.LabView.UnitTests.csproj", "{5053CA6C-FA23-439E-BE1E-B864164DD4B7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C1760C0B-F69D-416F-807B-F37797C6377E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1760C0B-F69D-416F-807B-F37797C6377E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1760C0B-F69D-416F-807B-F37797C6377E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1760C0B-F69D-416F-807B-F37797C6377E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5053CA6C-FA23-439E-BE1E-B864164DD4B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5053CA6C-FA23-439E-BE1E-B864164DD4B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5053CA6C-FA23-439E-BE1E-B864164DD4B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5053CA6C-FA23-439E-BE1E-B864164DD4B7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {41C2F350-C704-40B4-826D-C1F97D2673BB}
+	EndGlobalSection
+EndGlobal

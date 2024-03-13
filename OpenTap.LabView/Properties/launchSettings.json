@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "Editor": {
+      "commandName": "Executable",
+      "executablePath": "./editor.exe"
+    },
+    "Unit Test": {
+      "commandName": "Executable",
+      "executablePath": "./tap.exe",
+      "commandLineArgs": "unit-test run --verbose"
+    }
+  }
+}
