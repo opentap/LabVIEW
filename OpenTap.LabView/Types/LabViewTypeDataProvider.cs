@@ -74,12 +74,19 @@ namespace OpenTap.LabView.Types
 
                 foreach (Type type in types)
                 {
-                    if (typeof(LVClassRoot).IsAssignableFrom(type) == false)
+                    if (typeof(LVClassRoot).IsAssignableFrom(type) == false && type.Name != "LabVIEWExports")
                         continue;
 
-                    var resourceType = new LabViewTypeData(type);
-                    LabViewTypes.Add(resourceType);
-                    
+                    if (type.Name != "LabVIEWExports")
+                    {
+                        var resourceType = new LabViewTypeData(type);
+                        LabViewTypes.Add(resourceType);
+                    }
+                    else
+                    {
+                        
+                    }
+
                     var declaredMethods = type.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly);
                     foreach (var method in declaredMethods)
                     {

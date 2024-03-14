@@ -28,7 +28,8 @@ namespace OpenTap.LabView.Types
             Method = method;
             var attributes = new List<object>();
             
-            var displayAttribute = new DisplayAttribute(Method.Name, "", null, -10000, false, new [] { "LabVIEW", type.Name });
+            
+            var displayAttribute = new DisplayAttribute(Method.Name.Replace("__32", " "), "", null, -10000, false, type.Name == "LabVIEWExports" ? new []{"LabVIEW"} : new [] { "LabVIEW", type.Name });
             attributes.Add(displayAttribute);
 
             Attributes = attributes;
@@ -49,7 +50,7 @@ namespace OpenTap.LabView.Types
             Type = type;
             
             var attributes = new List<object>();
-            var displayAttribute = new DisplayAttribute(type.Name, "", null, -10000, false, new string[] { "LabVIEW" });
+            var displayAttribute = new DisplayAttribute(type.Name.Replace("__32", " "), "", null, -10000, false, new string[] { "LabVIEW" });
             attributes.Add(displayAttribute);
 
             Attributes = attributes;
