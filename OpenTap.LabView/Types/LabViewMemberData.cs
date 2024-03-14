@@ -1,38 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
+using InteropAssembly;
 using NationalInstruments.LabVIEW.Interop;
 namespace OpenTap.LabView.Types
 {
     public class LabViewMemberData : IMemberData
     {
+        public readonly object DefaultValue;
         public LabViewMemberData(LabViewTypeData labViewTypeData, ParameterInfo parameterInfo)
         {
             
             Attributes = Array.Empty<object>();
+            bool writable = true;
+            Name = parameterInfo.Name;
             if (parameterInfo.IsOut)
             {
-                Attributes = new[]
+                Attributes = new object[]
                 {
-                    new OutputAttribute()
+                    new DisplayAttribute(Name.Replace("__32", " ")),
+                    new OutputAttribute(),
+                    new BrowsableAttribute(true)
+                };
+                writable = false;
+            }
+            else
+            {
+                Attributes = new object[]
+                {
+                    new DisplayAttribute(Name.Replace("__32", " "))
                 };
             }
-            Name = parameterInfo.Name;
+            
+            
             DeclaringType = labViewTypeData;
             TypeDescriptor = TypeData.FromType(parameterInfo.ParameterType);
             
             // Generally Out parameters are marked ith a &. These we can just handle
             // by their underlying type. we know that they are references in the call.
-            if (parameterInfo.IsOut && parameterInfo.ParameterType.Name == "String&")
-                TypeDescriptor = TypeData.FromType(typeof(string));
-            if (parameterInfo.IsOut && parameterInfo.ParameterType.Name == "Int32&")
-                TypeDescriptor = TypeData.FromType(typeof(int));
+            if (parameterInfo.IsOut && parameterInfo.ParameterType.Name.EndsWith("&"))
+                TypeDescriptor = TypeData.FromType(parameterInfo.ParameterType.GetElementType());
             
             // if its a resource class we need to use the wrapper class.
             if (TypeDescriptor.DescendsTo(typeof(LVClassRoot)))
                 TypeDescriptor = new LabViewTypeData(((TypeData)TypeDescriptor).Type);
-            Writable = true;
+            Writable = writable;
             Readable = true;
+            if (TypeDescriptor.DescendsTo(typeof(double)))
+            {
+                DefaultValue = 0.0;
+            }
+            if (TypeDescriptor.DescendsTo(typeof(int)))
+            {
+                DefaultValue = 0;
+            }
+            if (TypeDescriptor.DescendsTo(typeof(string)))
+            {
+                DefaultValue = "";
+            }
         }
 
         public IEnumerable<object> Attributes
@@ -53,7 +79,7 @@ namespace OpenTap.LabView.Types
             {
                 return current;
             }
-            return null;
+            return DefaultValue;
         }
         public ITypeData DeclaringType
         {
