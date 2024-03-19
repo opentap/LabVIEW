@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <AdditionalOpenTapPackage Include="TUI" Version="1" />
-    <AdditionalOpenTapPackage Include="Editor"/>
-    <InternalsVisibleTo Include="OpenTap.LabView.UnitTests"/>
+    <AdditionalOpenTapPackage Include="Editor" />
+    <InternalsVisibleTo Include="OpenTap.LabView.UnitTests" />
   </ItemGroup>
 
   <ItemGroup>

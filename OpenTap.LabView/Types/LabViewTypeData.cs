@@ -14,7 +14,7 @@ namespace OpenTap.LabView.Types
         
         IMemberData[] customMemberDataCache;
         readonly LabViewMemberData[] members;
-        
+
         /// <summary>
         ///  LabViewTypeData Can either represent a resource (LvClass) or a test step(method) 
         /// </summary>
@@ -45,14 +45,21 @@ namespace OpenTap.LabView.Types
         public LabViewTypeData(Type type)
         {
             Name = LabViewTypeDataProvider.PREFIX + type.FullName;
-            members = Array.Empty<LabViewMemberData>();
             BaseType = TypeData.FromType(typeof(LabViewResource));
             Type = type;
-            
+         //   members = Array.Empty<LabViewMemberData>();
             var attributes = new List<object>();
             var displayAttribute = new DisplayAttribute(type.Name.Replace("__32", " "), "", null, -10000, false, new string[] { "LabVIEW" });
             attributes.Add(displayAttribute);
-
+            
+            var declaredMethods = type.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly);
+            
+            foreach (var method in declaredMethods)
+            {
+                ParameterInfo[] parameters = method.GetParameters();
+                members = parameters.Select(p => new LabViewMemberData(this, p)).ToArray();
+            }  
+            
             Attributes = attributes;
         }
 
@@ -67,7 +74,6 @@ namespace OpenTap.LabView.Types
         }
 
         IEnumerable<IMemberData> getCustomMembers() => members;
-        
         public IMemberData GetMember(string name) => members.FirstOrDefault(x => x.Name == name) ?? BaseType.GetMember(name);
 
         public object CreateInstance(object[] arguments)

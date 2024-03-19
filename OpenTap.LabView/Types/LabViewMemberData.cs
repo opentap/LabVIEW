@@ -9,9 +9,11 @@ namespace OpenTap.LabView.Types
     public class LabViewMemberData : IMemberData
     {
         public readonly object DefaultValue;
+        public readonly bool isResource;
         public LabViewMemberData(LabViewTypeData labViewTypeData, ParameterInfo parameterInfo)
         {
-            
+            isResource = labViewTypeData.IsResource;
+
             Attributes = Array.Empty<object>();
             bool writable = true;
             Name = parameterInfo.Name;
@@ -43,8 +45,8 @@ namespace OpenTap.LabView.Types
                 TypeDescriptor = TypeData.FromType(parameterInfo.ParameterType.GetElementType());
             
             // if its a resource class we need to use the wrapper class.
-            if (TypeDescriptor.DescendsTo(typeof(LVClassRoot)))
-                TypeDescriptor = new LabViewTypeData(((TypeData)TypeDescriptor).Type);
+          //  if (TypeDescriptor.DescendsTo(typeof(LVClassRoot)))
+          //      TypeDescriptor = new LabViewTypeData(((TypeData)TypeDescriptor).Type);
             Writable = writable;
             Readable = true;
             if (TypeDescriptor.DescendsTo(typeof(double)))
@@ -71,13 +73,30 @@ namespace OpenTap.LabView.Types
         }
         public void SetValue(object owner, object value)
         {
-            ((LabViewTestStep)owner).Values[this.Name] = value;
+            if (isResource)
+            {
+                ((LabViewResource)owner).Values[this.Name] = value;
+            }
+            else
+            {
+                ((LabViewTestStep)owner).Values[this.Name] = value;
+            }
         }
         public object GetValue(object owner)
         {
-            if (((LabViewTestStep)owner).Values.TryGetValue(this.Name, out var current))
+            if (isResource)
             {
-                return current;
+                if (((LabViewResource)owner).Values.TryGetValue(this.Name, out var current))
+                {
+                    return current;
+                }
+            }
+            else
+            {
+                if (((LabViewTestStep)owner).Values.TryGetValue(this.Name, out var current))
+                {
+                    return current;
+                }
             }
             return DefaultValue;
         }

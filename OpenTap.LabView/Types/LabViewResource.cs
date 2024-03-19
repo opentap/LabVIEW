@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
 using NationalInstruments.LabVIEW.Interop;
 namespace OpenTap.LabView.Types
@@ -12,7 +14,14 @@ namespace OpenTap.LabView.Types
         {
             
         }
-        
+
+        [Browsable(false)]
+        public Dictionary<string, object> Values
+        {
+            get;
+            set;
+        }
+     
         public LabViewResource(LabViewTypeData labViewPluginTypeData)
         {
             this.PluginType = labViewPluginTypeData;
