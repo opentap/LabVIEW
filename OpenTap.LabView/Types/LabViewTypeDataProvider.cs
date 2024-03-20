@@ -87,48 +87,4 @@ namespace OpenTap.LabView.Types
         }
     }
 
-    class LvClassAvailableValuesAnnotation : IStringReadOnlyValueAnnotation
-    {
-        readonly AnnotationCollection annotation;
-        public LvClassAvailableValuesAnnotation(AnnotationCollection annotation)
-        {
-            this.annotation = annotation;
-
-        }
-        public string Value
-        {
-            get
-            {
-                var objValue = annotation.Get<IObjectValueAnnotation>()?.Value;
-                if (objValue is LVClassRoot lvcls)
-                {
-                    objValue = $"LabViewObject:#{lvcls.InstanceIndex.ToInt64():X8}";
-                }
-                return objValue?.ToString();
-            }
-        }
-    }
-    
-    public class LabViewAnotator : IAnnotator
-    {
-
-        public void Annotate(AnnotationCollection annotations)
-        {
-            var mem = annotations.Get<IMemberAnnotation>()?.Member;
-            if (mem != null && mem.TypeDescriptor.DescendsTo(typeof(LVClassRoot)))
-            {
-                annotations.Add(new LvClassAvailableValuesAnnotation(annotations));
-            }
-        }
-        public double Priority => 0.0;
-    }
-
-    public static class FixStringExtensions
-    {
-        public static string FixString(this string str)
-        {
-            return str.Replace("__32", " ").Replace("__46", ".");
-        }
-    }
-
 }
