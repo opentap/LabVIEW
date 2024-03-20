@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using OpenTap.LabView.Utils;
 
 namespace OpenTap.LabView.Types
 {
@@ -59,11 +60,7 @@ namespace OpenTap.LabView.Types
 
         public object CreateInstance(object[] arguments)
         {
-
-            return new LabViewTestStep(this)
-            {
-                Name = Method.Name
-            };    
+            return new LabViewTestStep(this);
         }
 
         public ITypeData BaseType { get; }
@@ -83,7 +80,7 @@ namespace OpenTap.LabView.Types
 
         public static string GenerateTypeDataName(MemberInfo descriptor)
         {
-            return $"{LabViewTypeDataProvider.PREFIX}{descriptor.Name}";
+            return $"{LabViewTypeDataProvider.PREFIX}{descriptor.DeclaringType.Name + "." + descriptor.Name}";
         }
     }
 

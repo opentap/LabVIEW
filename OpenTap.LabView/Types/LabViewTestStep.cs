@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using NationalInstruments.LabVIEW.Interop;
+
 namespace OpenTap.LabView.Types
 {
     public class LabViewTestStep : TestStep
     {
-        public LabViewTypeData PluginType;
+        internal readonly LabViewTypeData PluginType;
         public LabViewTestStep(LabViewTypeData type)
         {
             
@@ -20,15 +19,16 @@ namespace OpenTap.LabView.Types
                 {
                     labViewMemberData.SetValue(this, labViewMemberData.TypeDescriptor.CreateInstance(Array.Empty<object>()));
                 }
+                else
+                {
+                    labViewMemberData.SetValue(this, labViewMemberData.DefaultValue);
+                }
             }
+            this.Name = type.GetDisplayAttribute().Name;
         }
         
-        [Browsable(false)]
-        public Dictionary<string,object> Values
-        {
-            get;
-            set;
-        }
+        public Dictionary<string,object> Values { get; }
+        
         public override void Run()
         {
             var p = PluginType.Method.GetParameters();
@@ -36,9 +36,15 @@ namespace OpenTap.LabView.Types
             var parameters = p.Select(x =>
             {
                 Values.TryGetValue(x.Name, out var value);
+                
+                // if its an IInput, it means that it should be connected to some output elsewhere in the test plan.
                 if (value is IInput i)
                 {
-                    value = i.Property.GetValue(i.Step);
+                    if (i.Property == null || i.Step == null)
+                        value = null;
+                    else
+                        // fetch the value of the output.
+                        value = i.Property.GetValue(i.Step);
                 }
                 return value;
             }).ToArray();
@@ -47,10 +53,9 @@ namespace OpenTap.LabView.Types
             for (int i = 0; i < p.Length; i++)
             {
                 
+                // if its an output, the value should be written back.
                 if (p[i].IsOut)
-                {
                     Values[p[i].Name] = parameters[i];
-                }
             }
         }
     }
