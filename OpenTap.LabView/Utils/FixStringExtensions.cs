@@ -4,7 +4,7 @@
     {
         public static string FixString(this string str)
         {
-            return str.Replace("__32", " ").Replace("__46", ".");
+            return str.Replace("___32", " ").Replace("___46", ".").Replace("__32", " ").Replace("__46", ".");
         }
     }
 }
