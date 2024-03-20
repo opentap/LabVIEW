@@ -41,8 +41,6 @@ namespace OpenTap.LabView.Types
         {
             if (obj is LabViewTestStep step)
                 return step.PluginType;
-            if (obj is LabViewResource res)
-                return res.PluginType;
             
             return null;
         }
@@ -76,17 +74,7 @@ namespace OpenTap.LabView.Types
                 {
                     if (typeof(LVClassRoot).IsAssignableFrom(type) == false && type.Name != "LabVIEWExports")
                         continue;
-
-                    if (type.Name != "LabVIEWExports")
-                    {
-                        var resourceType = new LabViewTypeData(type);
-                        LabViewTypes.Add(resourceType);
-                    }
-                    else
-                    {
-                        
-                    }
-
+             
                     var declaredMethods = type.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly);
                     foreach (var method in declaredMethods)
                     {
@@ -99,17 +87,25 @@ namespace OpenTap.LabView.Types
         }
     }
 
-    class LvClassAvailableValuesAnnotation : IAvailableValuesAnnotation
+    class LvClassAvailableValuesAnnotation : IStringReadOnlyValueAnnotation
     {
-        ITypeData TargetType;
-        public LvClassAvailableValuesAnnotation(ITypeData memTypeDescriptor)
+        readonly AnnotationCollection annotation;
+        public LvClassAvailableValuesAnnotation(AnnotationCollection annotation)
         {
-            this.TargetType = memTypeDescriptor;
-        }
+            this.annotation = annotation;
 
-        public IEnumerable AvailableValues
+        }
+        public string Value
         {
-            get => InstrumentSettings.Current.Where(instr => TypeData.GetTypeData(instr).DescendsTo(TargetType));
+            get
+            {
+                var objValue = annotation.Get<IObjectValueAnnotation>()?.Value;
+                if (objValue is LVClassRoot lvcls)
+                {
+                    objValue = $"LabViewObject:#{lvcls.InstanceIndex.ToInt64():X8}";
+                }
+                return objValue?.ToString();
+            }
         }
     }
     
@@ -119,12 +115,20 @@ namespace OpenTap.LabView.Types
         public void Annotate(AnnotationCollection annotations)
         {
             var mem = annotations.Get<IMemberAnnotation>()?.Member;
-            if (mem != null && mem.TypeDescriptor.DescendsTo(typeof(LabViewResource)))
+            if (mem != null && mem.TypeDescriptor.DescendsTo(typeof(LVClassRoot)))
             {
-                annotations.Add(new LvClassAvailableValuesAnnotation(mem.TypeDescriptor));
+                annotations.Add(new LvClassAvailableValuesAnnotation(annotations));
             }
         }
         public double Priority => 0.0;
+    }
+
+    public static class FixStringExtensions
+    {
+        public static string FixString(this string str)
+        {
+            return str.Replace("__32", " ").Replace("__46", ".");
+        }
     }
 
 }
