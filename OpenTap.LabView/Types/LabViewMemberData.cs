@@ -19,7 +19,7 @@ namespace OpenTap.LabView.Types
             {
                 Attributes = new object[]
                 {
-                    new DisplayAttribute(Name.Replace("__32", " ")),
+                    new DisplayAttribute(Name.FixString()),
                     new OutputAttribute(),
                     new BrowsableAttribute(true)
                 };
@@ -29,7 +29,7 @@ namespace OpenTap.LabView.Types
             {
                 Attributes = new object[]
                 {
-                    new DisplayAttribute(Name.Replace("__32", " "))
+                    new DisplayAttribute(Name.FixString())
                 };
             }
             
@@ -43,8 +43,8 @@ namespace OpenTap.LabView.Types
                 TypeDescriptor = TypeData.FromType(parameterInfo.ParameterType.GetElementType());
             
             // if its a resource class we need to use the wrapper class.
-            if (TypeDescriptor.DescendsTo(typeof(LVClassRoot)))
-                TypeDescriptor = new LabViewTypeData(((TypeData)TypeDescriptor).Type);
+            if (!parameterInfo.IsOut &&TypeDescriptor.DescendsTo(typeof(LVClassRoot)) && TypeDescriptor is TypeData td)
+                TypeDescriptor = TypeData.FromType(typeof(Input<>).MakeGenericType(td.Type));
             Writable = writable;
             Readable = true;
             if (TypeDescriptor.DescendsTo(typeof(double)))
@@ -96,6 +96,21 @@ namespace OpenTap.LabView.Types
         public bool Readable
         {
             get;
+        }
+    }
+
+    public struct InputObject<T> : IInput
+    {
+
+        public ITestStep Step
+        {
+            get;
+            set;
+        }
+        public IMemberData Property
+        {
+            get;
+            set;
         }
     }
 }

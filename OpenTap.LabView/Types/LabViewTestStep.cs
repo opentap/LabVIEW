@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using NationalInstruments.LabVIEW.Interop;
@@ -9,9 +10,19 @@ namespace OpenTap.LabView.Types
         public LabViewTypeData PluginType;
         public LabViewTestStep(LabViewTypeData type)
         {
+            
             this.PluginType = type;
             Values = new Dictionary<string, object>();
+            
+            foreach (var labViewMemberData in type.GetMembers().OfType<LabViewMemberData>())
+            {
+                if (labViewMemberData.TypeDescriptor.DescendsTo(typeof(Input<>)))
+                {
+                    labViewMemberData.SetValue(this, labViewMemberData.TypeDescriptor.CreateInstance(Array.Empty<object>()));
+                }
+            }
         }
+        
         [Browsable(false)]
         public Dictionary<string,object> Values
         {
@@ -25,9 +36,9 @@ namespace OpenTap.LabView.Types
             var parameters = p.Select(x =>
             {
                 Values.TryGetValue(x.Name, out var value);
-                if (value is LabViewResource lvr)
+                if (value is IInput i)
                 {
-                    return lvr.LabViewObject;
+                    value = i.Property.GetValue(i.Step);
                 }
                 return value;
             }).ToArray();
@@ -36,16 +47,7 @@ namespace OpenTap.LabView.Types
             for (int i = 0; i < p.Length; i++)
             {
                 
-                if (p[i].Name.Contains("__32out"))
-                {
-                    if (parameters[i] is LVClassRoot cls)
-                    {
-                        if (Values[p[i].Name.Replace("__32out", "__32in")] is LabViewResource res)
-                        {
-                            res.LabViewObject = cls;
-                        }
-                    }
-                }else if (p[i].IsOut)
+                if (p[i].IsOut)
                 {
                     Values[p[i].Name] = parameters[i];
                 }

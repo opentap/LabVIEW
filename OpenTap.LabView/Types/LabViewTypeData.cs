@@ -29,7 +29,7 @@ namespace OpenTap.LabView.Types
             var attributes = new List<object>();
             
             
-            var displayAttribute = new DisplayAttribute(Method.Name.Replace("__32", " "), "", null, -10000, false, type.Name == "LabVIEWExports" ? new []{"LabVIEW"} : new [] { "LabVIEW", type.Name });
+            var displayAttribute = new DisplayAttribute(Method.Name.FixString(), "", null, -10000, false, type.Name == "LabVIEWExports" ? new []{"LabVIEW"} : new [] { "LabVIEW", type.Name.FixString() });
             attributes.Add(displayAttribute);
 
             Attributes = attributes;
@@ -42,20 +42,7 @@ namespace OpenTap.LabView.Types
             members = parameters.Select(p => new LabViewMemberData(this, p)).ToArray();
 
         }
-        public LabViewTypeData(Type type)
-        {
-            Name = LabViewTypeDataProvider.PREFIX + type.FullName;
-            members = Array.Empty<LabViewMemberData>();
-            BaseType = TypeData.FromType(typeof(LabViewResource));
-            Type = type;
-            
-            var attributes = new List<object>();
-            var displayAttribute = new DisplayAttribute(type.Name.Replace("__32", " "), "", null, -10000, false, new string[] { "LabVIEW" });
-            attributes.Add(displayAttribute);
-
-            Attributes = attributes;
-        }
-
+        
         public IEnumerable<object> Attributes { get; }
 
         public string Name { get; }
@@ -72,21 +59,11 @@ namespace OpenTap.LabView.Types
 
         public object CreateInstance(object[] arguments)
         {
-            if (Type != null)
+
+            return new LabViewTestStep(this)
             {
-                return new LabViewResource(this)
-                {
-                    Name = Type.Name
-                };    
-            }
-            else
-            {
-                return new LabViewTestStep(this)
-                {
-                    Name = Method.Name
-                };    
-            }
-            
+                Name = Method.Name
+            };    
         }
 
         public ITypeData BaseType { get; }
