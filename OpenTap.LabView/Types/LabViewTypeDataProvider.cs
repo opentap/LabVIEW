@@ -41,8 +41,6 @@ namespace OpenTap.LabView.Types
         {
             if (obj is LabViewTestStep step)
                 return step.PluginType;
-            if (obj is LabViewResource res)
-                return res.PluginType;
             
             return null;
         }
@@ -76,17 +74,7 @@ namespace OpenTap.LabView.Types
                 {
                     if (typeof(LVClassRoot).IsAssignableFrom(type) == false && type.Name != "LabVIEWExports")
                         continue;
-
-                    if (type.Name != "LabVIEWExports")
-                    {
-                        var resourceType = new LabViewTypeData(type);
-                        LabViewTypes.Add(resourceType);
-                    }
-                    else
-                    {
-                        
-                    }
-
+             
                     var declaredMethods = type.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly);
                     foreach (var method in declaredMethods)
                     {
@@ -97,34 +85,6 @@ namespace OpenTap.LabView.Types
 
             }
         }
-    }
-
-    class LvClassAvailableValuesAnnotation : IAvailableValuesAnnotation
-    {
-        ITypeData TargetType;
-        public LvClassAvailableValuesAnnotation(ITypeData memTypeDescriptor)
-        {
-            this.TargetType = memTypeDescriptor;
-        }
-
-        public IEnumerable AvailableValues
-        {
-            get => InstrumentSettings.Current.Where(instr => TypeData.GetTypeData(instr).DescendsTo(TargetType));
-        }
-    }
-    
-    public class LabViewAnotator : IAnnotator
-    {
-
-        public void Annotate(AnnotationCollection annotations)
-        {
-            var mem = annotations.Get<IMemberAnnotation>()?.Member;
-            if (mem != null && mem.TypeDescriptor.DescendsTo(typeof(LabViewResource)))
-            {
-                annotations.Add(new LvClassAvailableValuesAnnotation(mem.TypeDescriptor));
-            }
-        }
-        public double Priority => 0.0;
     }
 
 }
