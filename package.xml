@@ -6,12 +6,17 @@ Version: The version of the package. Must be in a semver 2.0 compatible format. 
 For Version the following macro is available (Only works if the project directory is under Git source control):
 $(GitVersion) - Gets the version from Git in the recommended format Major.Minor.Build-PreRelease+CommitHash.BranchName.
 -->
-<Package Name="LabVIEW" Version="0.1.0-alpha" OS="Windows,Linux" Architecture="AnyCPU" xmlns="http://opentap.io/schemas/package">
-  <Description>This is my OpenTAP plugin package.</Description>
+<Package Name="LabVIEW" Version="$(GitVersion)" OS="Windows,Linux" Architecture="AnyCPU" xmlns="http://opentap.io/schemas/package">
+  <Description>This plugin adds support for loading LabVIEW plugins as OpenTAP plugins.
+    
+  </Description>
+  <Owner>OpenTAP</Owner>
   <Files>
-    <File Path="Packages/OpenTap.Plugins.LabviewInterop/OpenTap.Plugins.LabviewInterop.dll" SourcePath="OpenTap.Plugins.LabviewInterop.dll">
+    <File Path="Packages/LabVIEW/OpenTap.LabView.dll" SourcePath="OpenTap.LabView.dll">
       <SetAssemblyInfo Attributes="Version"/>
-      <!--ObfuscateWithDotfuscator/-->
+      <Sign Certificate="Keysight Technologies, Inc."/>
+    </File>
+    <File Path="Packages/LabVIEW/NationalInstruments.LabVIEW.Interop.dll" SourcePath="NationalInstruments.LabVIEW.Interop.dll">
     </File>
   </Files>
 </Package>

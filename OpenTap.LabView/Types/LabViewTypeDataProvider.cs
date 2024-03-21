@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using NationalInstruments.LabVIEW.Interop;
@@ -14,7 +14,8 @@ namespace OpenTap.LabView.Types
     public class LabViewTypeDataProvider : ITypeDataProvider, ITypeDataSearcher
     {
         internal const string PREFIX = "vi:";
-
+        
+        static readonly TraceSource log = Log.CreateSource("LabView");
         static readonly List<LabViewTypeData> LabViewTypes = new List<LabViewTypeData>();
 
         public IEnumerable<ITypeData> Types => LabViewTypes.Select(x => x);
@@ -51,6 +52,8 @@ namespace OpenTap.LabView.Types
         /// <summary> Load LabView DLLs and load labview types. </summary>
         public void Search()
         {
+            var sw = Stopwatch.StartNew();
+            log.Debug("Searching for LabVIEW plugins.");
             var allAssemblies = PluginManager.GetSearcher().Assemblies.ToArray();
 
             foreach (var asm in allAssemblies)
@@ -83,6 +86,14 @@ namespace OpenTap.LabView.Types
                     }
                 }
 
+            }
+            if (LabViewTypes.Count == 0)
+            {
+                log.Debug(sw, "No LabVIEW plugin types discovered.");
+            }
+            else
+            {
+                log.Debug(sw, $"Found {LabViewTypes.Count} LabVIEW plugins.");
             }
         }
     }

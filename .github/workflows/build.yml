@@ -1,0 +1,65 @@
+name: Build
+on:
+  push:
+    branches: [ "*" ]
+    tags: [ "v*"]
+env:
+  OPENTAP_ANSI_COLORS: true
+  OPENTAP_NO_UPDATE_CHECK: true
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Fix tags
+      if: startsWith(github.ref, 'refs/tags/v')
+      run: git fetch -f origin ${{ github.ref }}:${{ github.ref }}
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Build
+      run: |
+        echo "${{ secrets.SIGN_SERVER_CERT }}" > $TAP_SIGN_CERT
+        dotnet build -c Release
+      env:
+        TAP_SIGN_ADDRESS: ${{ secrets.TAP_SIGN_ADDRESS }}
+        TAP_SIGN_AUTH: ${{ secrets.TAP_SIGN_AUTH }}
+        TAP_SIGN_CERT: ${{ github.workspace }}/sign.cer
+        Ks8500Token: ${{secrets.KS8500TOKEN}}
+          
+    # - name: Run Unit Tests
+    #  working-directory: bin/Release
+    #  run: ./tap unit-test run
+
+    - name: Upload binaries
+      uses: actions/upload-artifact@v2
+      with:
+        name: TapPackage
+        retention-days: 14
+        path: |
+          bin/Release/*.TapPackage
+
+  publish:
+    environment: packages.opentap.io
+    runs-on: ubuntu-20.04
+    needs: build
+    steps:
+    - name: Download binaries
+      uses: actions/download-artifact@v2
+      with:
+        name: TapPackage
+        path: bin/Release/
+    - name: Setup OpenTAP
+      uses: opentap/setup-opentap@v1.0
+      with:
+        version: 9.22.0-rc.2
+        packages: 'Repository Client:beta'
+    - name: Publish Packages
+      working-directory: bin/Release
+      run: |
+        tap repo upload --repository http://packages.opentap.io --token ${{ secrets.OPENTAP_IO_TOKEN }} LabVIEW.*.TapPackage
+      
