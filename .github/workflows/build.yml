@@ -44,6 +44,7 @@ jobs:
           bin/Release/*.TapPackage
 
   publish:
+    if: false
     environment: packages.opentap.io
     runs-on: ubuntu-20.04
     needs: build
