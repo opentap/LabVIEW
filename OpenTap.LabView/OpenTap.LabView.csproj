@@ -2,18 +2,24 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <OpenTapPackageDefinitionPath>package.xml</OpenTapPackageDefinitionPath>
+    <OpenTapPackageDefinitionPath>..\package.xml</OpenTapPackageDefinitionPath>
     
   </PropertyGroup>
 
   <ItemGroup>
-    <AdditionalOpenTapPackage Include="TUI" Version="1" />
-    <AdditionalOpenTapPackage Include="Editor"/>
     <InternalsVisibleTo Include="OpenTap.LabView.UnitTests"/>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="OpenTAP" Version="$(OpenTapVersion)" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <AdditionalOpenTapPackage Include="Expressions" Version="1"/>
+    <AdditionalOpenTapPackage Include="TUI" Version="1" />
+    <AdditionalOpenTapPackage Include="Editor"/>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <AdditionalOpenTapPackage Include="Sign" Repository="https://test-automation.pw.keysight.com/api/packages" Version="1.4.0" Token="$(Ks8500Token)"/>
   </ItemGroup>
 
   <ItemGroup>
