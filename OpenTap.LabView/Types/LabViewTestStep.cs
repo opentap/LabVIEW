@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NationalInstruments.LabVIEW.Interop;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -48,8 +49,22 @@ namespace OpenTap.LabView.Types
                 }
                 return value;
             }).ToArray();
-            
-            PluginType.Method.Invoke(null, parameters);
+
+            try
+            {
+                PluginType.Method.Invoke(null, parameters);
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException is VIAssemblyException)
+                {
+                    throw ex.InnerException;
+                }
+                else
+                    throw;
+            }
+
+
             for (int i = 0; i < p.Length; i++)
             {
                 
