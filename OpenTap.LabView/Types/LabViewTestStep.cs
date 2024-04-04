@@ -64,7 +64,6 @@ namespace OpenTap.LabView.Types
                     throw;
             }
 
-
             for (int i = 0; i < p.Length; i++)
             {
                 
