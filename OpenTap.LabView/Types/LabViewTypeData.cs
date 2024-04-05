@@ -16,12 +16,6 @@ namespace OpenTap.LabView.Types
         IMemberData[] customMemberDataCache;
         readonly LabViewMemberData[] members;
         
-        /// <summary>
-        ///  LabViewTypeData Can either represent a resource (LvClass) or a test step(method) 
-        /// </summary>
-        public bool IsResource => Type != null;
-        
-        public Type Type { get; }
         public MethodInfo Method { get;  }
 
         public LabViewTypeData(MethodInfo method, Type type)
