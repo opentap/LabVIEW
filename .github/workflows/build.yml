@@ -25,6 +25,10 @@ jobs:
       run: |
         echo "${{ secrets.SIGN_SERVER_CERT }}" > $TAP_SIGN_CERT
         dotnet build -c Release
+        cd bin/Release
+        mkdir Packages/LabVIEW\ Examples/
+        cp -r ../../Dependency/OpenTap.LabView.Test1/ Packages/LabVIEW\ Examples/
+        ./tap package create --verbose -o LabVIEW.Example.TapPackage ../../package.example.xml
       env:
         TAP_SIGN_ADDRESS: ${{ secrets.TAP_SIGN_ADDRESS }}
         TAP_SIGN_AUTH: ${{ secrets.TAP_SIGN_AUTH }}
