@@ -23,18 +23,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="InteropAssembly">
-      <HintPath>Dependency\InteropAssembly.dll</HintPath>
-    </Reference>
     <Reference Include="NationalInstruments.LabVIEW.Interop">
       <HintPath>../Dependency/NationalInstruments.LabVIEW.Interop.dll</HintPath>
     </Reference>
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\Dependency\InteropAssembly.dll">
-      <Link>InteropAssembly.dll</Link>
-    </Content>
+    <None Include="..\Dependency\OpenTap.LabView.Test1.dll">
+      <Link>OpenTap.LabView.Test1.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

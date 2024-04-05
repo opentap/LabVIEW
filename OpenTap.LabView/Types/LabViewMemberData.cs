@@ -52,6 +52,14 @@ namespace OpenTap.LabView.Types
             {
                 DefaultValue = 0.0;
             }
+            if (TypeDescriptor.DescendsTo(typeof(float)))
+            {
+                DefaultValue = 0.0f;
+            }
+            if (TypeDescriptor.DescendsTo(typeof(bool)))
+            {
+                DefaultValue = false;
+            }
             if (TypeDescriptor.DescendsTo(typeof(int)))
             {
                 DefaultValue = 0;
