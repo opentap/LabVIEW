@@ -11,7 +11,7 @@
 		<Property Name="server.vi.callsEnabled" Type="Bool">true</Property>
 		<Property Name="server.vi.propertiesEnabled" Type="Bool">true</Property>
 		<Property Name="specify.custom.address" Type="Bool">false</Property>
-		<Item Name="Error_Handling_Test.vi" Type="VI" URL="../Error_Handling_Test.vi"/>
+		<Item Name="Error Handling Test.vi" Type="VI" URL="../Error Handling Test.vi"/>
 		<Item Name="Test Array.vi" Type="VI" URL="../Test Array.vi"/>
 		<Item Name="Test Call SubVi.vi" Type="VI" URL="../Test Call SubVi.vi"/>
 		<Item Name="Test Class 1.lvclass" Type="LVClass" URL="../Test Class 1/Test Class 1.lvclass"/>
@@ -40,7 +40,7 @@
 				<Property Name="Bld_localDestDirType" Type="Str">relativeToCommon</Property>
 				<Property Name="Bld_modifyLibraryFile" Type="Bool">true</Property>
 				<Property Name="Bld_previewCacheID" Type="Str">{7F60A1B0-4C2C-4F91-AC61-2B98844F767E}</Property>
-				<Property Name="Bld_version.build" Type="Int">9</Property>
+				<Property Name="Bld_version.build" Type="Int">10</Property>
 				<Property Name="Bld_version.major" Type="Int">1</Property>
 				<Property Name="Destination[0].destName" Type="Str">OpenTap.LabView.Test1.dll</Property>
 				<Property Name="Destination[0].path" Type="Path">../builds/NI_AB_PROJECTNAME/OpenTap.LabView.Test1/OpenTap.LabView.Test1.dll</Property>
@@ -56,7 +56,7 @@
 				<Property Name="DotNETAssembly_signAssembly" Type="Bool">false</Property>
 				<Property Name="DotNETAssembly_StrongNameKeyFileItemID" Type="Ref"></Property>
 				<Property Name="DotNETAssembly_StrongNameKeyGUID" Type="Str">{355D8948-4820-4E96-A734-35D90A751E4D}</Property>
-				<Property Name="Source[0].itemID" Type="Str">{F8951296-917F-4A3B-A7B4-79A39D95A382}</Property>
+				<Property Name="Source[0].itemID" Type="Str">{3A400311-7947-40C1-98B3-A7E50C4302C0}</Property>
 				<Property Name="Source[0].type" Type="Str">Container</Property>
 				<Property Name="Source[1].destinationIndex" Type="Int">0</Property>
 				<Property Name="Source[1].ExportedAssemblyVI.VIProtoInfo[0]VIProtoConNum" Type="Int">-1</Property>
@@ -241,8 +241,8 @@
 				<Property Name="Source[6].ExportedAssemblyVI.VIProtoInfo[1]VIProtoIutputIdx" Type="Int">11</Property>
 				<Property Name="Source[6].ExportedAssemblyVI.VIProtoInfo[1]VIProtoName" Type="Str">String</Property>
 				<Property Name="Source[6].ExportedAssemblyVI.VIProtoInfo[1]VIProtoOutputIdx" Type="Int">-1</Property>
-				<Property Name="Source[6].ExportedAssemblyVI.VIProtoInfo[2]MethodName" Type="Str">Error_Handling_Test</Property>
-				<Property Name="Source[6].ExportedAssemblyVI.VIProtoInfo[2]VIName" Type="Str">Error_Handling_Test.vi</Property>
+				<Property Name="Source[6].ExportedAssemblyVI.VIProtoInfo[2]MethodName" Type="Str">Error___32Handling___32Test</Property>
+				<Property Name="Source[6].ExportedAssemblyVI.VIProtoInfo[2]VIName" Type="Str">Error Handling Test.vi</Property>
 				<Property Name="Source[6].ExportedAssemblyVI.VIProtoInfo[2]VIProtoConNum" Type="Int">3</Property>
 				<Property Name="Source[6].ExportedAssemblyVI.VIProtoInfo[2]VIProtoDataType" Type="Str">Cluster</Property>
 				<Property Name="Source[6].ExportedAssemblyVI.VIProtoInfo[2]VIProtoDir" Type="Int">7</Property>
@@ -253,7 +253,7 @@
 				<Property Name="Source[6].ExportedAssemblyVI.VIProtoInfoVIDocumentationEnabled" Type="Int">0</Property>
 				<Property Name="Source[6].ExportedAssemblyVI.VIProtoInfoVIIsNamesSanitized" Type="Int">1</Property>
 				<Property Name="Source[6].ExportedAssemblyVI.VIProtoInfoVIProtoItemCount" Type="Int">3</Property>
-				<Property Name="Source[6].itemID" Type="Ref">/My Computer/Error_Handling_Test.vi</Property>
+				<Property Name="Source[6].itemID" Type="Ref">/My Computer/Error Handling Test.vi</Property>
 				<Property Name="Source[6].sourceInclusion" Type="Str">TopLevel</Property>
 				<Property Name="Source[6].type" Type="Str">ExportedAssemblyVI</Property>
 				<Property Name="SourceCount" Type="Int">7</Property>
