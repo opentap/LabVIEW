@@ -56,9 +56,9 @@ namespace OpenTap.LabView.Types
             }
             catch (Exception ex)
             {
-                if (ex.InnerException is VIAssemblyException)
+                if (ex.InnerException is VIAssemblyException viEx)
                 {
-                    throw ex.InnerException;
+                    throw new Exception($"{viEx.ErrorSource} (Error Code: {viEx.ErrorCode})");
                 }
                 else
                     throw;
