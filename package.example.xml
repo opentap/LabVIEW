@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Package Name="LabVIEW Examples" Version="$(GitVersion)" OS="Windows,Linux,MacOS" Architecture="AnyCPU" xmlns="http://opentap.io/schemas/package">
+  <Description>This plugin contains an examaple of using LabVIEW for creating OpenTAP plugins. 
+    
+  </Description>
+  <Owner>OpenTAP</Owner>
+  <Dependencies>
+    <PackageDependency Package="LabVIEW" Version="^0.1.0"/>
+  </Dependencies>
+  <Files>
+    <File Path="Packages/LabVIEW Examples/OpenTap.LabView.Test1.dll" SourcePath="OpenTap.LabView.Test1.dll">
+      <SetAssemblyInfo Attributes="Version"/>
+      <Sign Certificate="Keysight Technologies, Inc."/>
+    </File>
+    <File Path="Packages/LabVIEW Examples/OpenTap.LabView.Test1/" SourcePath="Packages/LabVIEW Examples/OpenTap.LabView.Test1/**/*"/>
+  </Files>
+</Package>
