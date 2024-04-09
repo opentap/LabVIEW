@@ -7,7 +7,7 @@ using NationalInstruments.LabVIEW.Interop;
 using OpenTap.LabView.Utils;
 namespace OpenTap.LabView.Types
 {
-    public class LabViewMemberData : IMemberData
+    class LabViewMemberData : IMemberData
     {
         public readonly object DefaultValue;
         public LabViewMemberData(LabViewTypeData labViewTypeData, ParameterInfo parameterInfo)

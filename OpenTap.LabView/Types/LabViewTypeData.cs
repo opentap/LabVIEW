@@ -9,7 +9,7 @@ namespace OpenTap.LabView.Types
     /// <summary>
     /// This class represent a type from labview transformed into OpenTAP concepts.
     /// </summary>
-    public class LabViewTypeData : ITypeData
+    class LabViewTypeData : ITypeData
     {
         public override string ToString() => $"labview:{this.Name}";
         
@@ -18,8 +18,9 @@ namespace OpenTap.LabView.Types
         
         public MethodInfo Method { get;  }
 
-        public LabViewTypeData(MethodInfo method, Type type)
+        public LabViewTypeData(MethodInfo method, Type type, LabViewAssembly labViewAssembly)
         {
+            this.LabViewAssembly = labViewAssembly;
             Method = method;
             var attributes = new List<object>();
             
@@ -38,10 +39,15 @@ namespace OpenTap.LabView.Types
 
         }
         
+        internal LabViewAssembly LabViewAssembly { get; }
+        
+        /// <summary> The attributes of the type. </summary> 
         public IEnumerable<object> Attributes { get; }
 
+        /// <summary> The name of the type. </summary>
         public string Name { get; }
 
+        /// <summary> The members of the type. </summary>
         public IEnumerable<IMemberData> GetMembers()
         {
             var baseMembers = BaseType.GetMembers();
@@ -49,16 +55,20 @@ namespace OpenTap.LabView.Types
         }
 
         IEnumerable<IMemberData> getCustomMembers() => members;
-        
+         
+        /// <summary> Get a member by name. </summary>
         public IMemberData GetMember(string name) => members.FirstOrDefault(x => x.Name == name) ?? BaseType.GetMember(name);
 
+        /// <summary> Create an instance of the type. </summary>
         public object CreateInstance(object[] arguments)
         {
             return new LabViewTestStep(this);
         }
 
+        /// <summary> The base type of the type. </summary>
         public ITypeData BaseType { get; }
 
+        /// <summary> The attributes of the type. </summary>
         public bool CanCreateInstance => true;
 
         // Equals / GetHashCode must be overridden, otherwise these new types will not work well.
@@ -72,7 +82,7 @@ namespace OpenTap.LabView.Types
 
         public override int GetHashCode() => Name.GetHashCode() * 3128321;
 
-        public static string GenerateTypeDataName(MemberInfo descriptor)
+        static string GenerateTypeDataName(MemberInfo descriptor)
         {
             return $"{LabViewTypeDataProvider.PREFIX}{descriptor.DeclaringType.Name + "." + descriptor.Name}";
         }
