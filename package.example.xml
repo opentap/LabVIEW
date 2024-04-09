@@ -4,9 +4,6 @@
     
   </Description>
   <Owner>OpenTAP</Owner>
-  <Dependencies>
-    <PackageDependency Package="LabVIEW" Version="^0.1.0"/>
-  </Dependencies>
   <Files>
     <File Path="Packages/LabVIEW Examples/OpenTap.LabView.Test1.dll" SourcePath="OpenTap.LabView.Test1.dll">
       <SetAssemblyInfo Attributes="Version"/>
