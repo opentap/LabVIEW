@@ -2,10 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("OpenTap.labView.UnitTests")]
 
 namespace OpenTap.LabView.Types
 {
-    public class LabViewTestStep : TestStep
+    class LabViewTestStep : TestStep
     {
         internal readonly LabViewTypeData PluginType;
         public LabViewTestStep(LabViewTypeData type)

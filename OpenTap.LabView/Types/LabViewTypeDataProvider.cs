@@ -11,7 +11,7 @@ namespace OpenTap.LabView.Types
     /// <summary>
     /// The type data provider that loads the VEE files and generates the collection of VEE type data.
     /// </summary>
-    public class LabViewTypeDataProvider : ITypeDataProvider, ITypeDataSearcher
+    public class LabViewTypeDataProvider : ITypeDataProvider, ITypeDataSearcher, ITypeDataSourceProvider
     {
         internal const string PREFIX = "vi:";
         
@@ -19,10 +19,13 @@ namespace OpenTap.LabView.Types
         static readonly List<LabViewTypeData> LabViewTypes = new List<LabViewTypeData>();
 
         public IEnumerable<ITypeData> Types => LabViewTypes.Select(x => x);
-
-        public LabViewTypeDataProvider()
+        ITypeDataSource ITypeDataSourceProvider.GetSource(ITypeData typeData)
         {
-
+            if (typeData is LabViewTypeData lvType)
+            {
+                return lvType.LabViewAssembly;
+            }
+            return null;
         }
 
         /// <summary> Locate a type based on string identifier. </summary>
@@ -71,6 +74,8 @@ namespace OpenTap.LabView.Types
 
                 var asm2 = asm.Load();
 
+                var labViewAssembly = new LabViewAssembly(asm);
+
                 Type[] types = asm2.GetTypes();
 
                 foreach (Type type in types)
@@ -81,7 +86,8 @@ namespace OpenTap.LabView.Types
                     var declaredMethods = type.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly);
                     foreach (var method in declaredMethods)
                     {
-                        var newType = new LabViewTypeData(method, type);
+                        var newType = new LabViewTypeData(method, type, labViewAssembly);
+                        labViewAssembly.LabViewTypes.Add(newType);
                         LabViewTypes.Add(newType);
                     }
                 }
