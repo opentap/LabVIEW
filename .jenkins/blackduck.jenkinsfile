@@ -1,0 +1,213 @@
+// groovylint-disable ConsecutiveBlankLines
+
+
+Map vaultConfiguration = [
+    vaultUrl: 'https://vault.ksfdevops.keysight.com',
+    vaultCredentialId: 'vault-approle',
+    engineVersion: 1
+]
+ 
+ArrayList<Map> vaultSecrets = [
+    [
+        engineVersion: 1,
+        path: 'kv/secret/team-pwsm/opentapplugins/labview',
+        secretValues: [
+             [envVar: 'Ks8500Token', vaultKey: 'repo-pathwave-token'],
+        ]
+    ]
+]
+// =====================================================================
+// CUSTOMIZATION_TODO
+// =====================================================================
+// groovylint-disable-next-line
+//@Library('KOSi Pipeline Library@v5.1.2') _
+@Library('KOSi Pipeline Library@v5.1.2') _
+
+// =====================================================================
+// CUSTOMIZATION_TODO
+// =====================================================================
+Map projectConfig =
+[
+    'blackDuck': [
+        'plcStage': 'Released'
+    ],
+    'scanAgentLabel': 'windows',
+    'projectName': 'LabVIEWPlugin',
+    'versionInfo': [
+        'version':  'placeholder'
+    ],
+    'sourceDirectory': '.',
+    'logLevel': 'debug',
+    'blackDuckExcludeTypes': 'PEAR'
+]
+
+// =====================================================================
+// KpcBuildAgents Configuration
+// =====================================================================
+List PipelineAgents =
+[
+    [label: 'windows', type: 'vsphere', jenkinsHostLabel: 'windows']
+]
+def PipelineKpcBuildAgents = GetKpcBuildAgentsSingleton()
+
+// =====================================================================
+// Kubernetes KOSi Pipeline Executor Configuration
+// =====================================================================
+KosiLoadKplContainerExtensions()
+InsertKpeKubernetesAgentInfo(projectConfig)
+
+// =====================================================================
+// The Pipeline
+// =====================================================================
+pipeline
+{
+    agent
+    {
+        kubernetes
+        {
+            yaml projectConfig.KpekubernetesConfig.kubernetesLinuxAgent.yaml
+        }
+    }
+
+    // // =====================================================================
+    // // CUSTOMIZATION_TODO
+    // // =====================================================================
+    // triggers
+    // {
+    //     cron 'H H 1,16 * *'
+    // }
+
+    options
+    {
+        disableConcurrentBuilds()
+        disableResume()
+        skipDefaultCheckout true
+        timestamps()
+    }
+
+    // Use environment for Jenkinsfile template to simplify inserting
+    // custom shell/batch scripts
+    // environment
+    // {
+    //     CUSTOMIZION_TODO
+    // }
+
+    stages
+    {
+        stage('Initialize Library Data')
+        {
+            steps
+            {
+                InsertPipelineInitialization(projectConfig)
+            }
+        }
+
+        stage('KPC Reservation')
+        {
+            steps
+            {
+                script
+                {
+                    PipelineKpcBuildAgents.Reserve(projectConfig, PipelineAgents)
+                }
+            }
+        }
+
+        stage('Prepare Build Agent Workspace')
+        {
+            agent { label "${PipelineKpcBuildAgents.GetAgentLabelExpression(projectConfig.scanAgentLabel)}" }
+            steps
+            {
+                script
+                {
+                    List packageConfigs = [
+                        [packageType: 'dotnet']
+                    ]
+                    PipelineStagePrepare(projectConfig, packageConfigs)
+                    // =========================================================
+                    // CUSTOMIZATION_TODO
+                    // =========================================================
+                }
+            }
+        }
+
+        stage('Build software')
+        {
+            environment {
+                OpenTapVersion = '9.23.0'
+            }
+            agent { label "${PipelineKpcBuildAgents.GetAgentLabelExpression(projectConfig.scanAgentLabel)}" }
+            steps
+            {
+                withVault([configuration: vaultConfiguration, vaultSecrets: vaultSecrets])
+                {
+                    script
+                    {
+                        echo "restore OpenTAP dependencies"              
+                        powershell """
+                            # add package feed
+                            dotnet nuget add source https://api.nuget.org/v3/index.json --name nuget.org
+                            # build docs
+                            dotnet build -c Release
+                            pushd doc
+                            ..\\bin\\Release\\tap package install DocumentationGeneration --version 1.0.2 -r "https://test-automation.pw.keysight.com/api/packages;token=\$env:Ks8500Token"
+                            ..\\bin\\Release\\tap generate-pdf LabVIEW.md --out "..\\bin\\Release\\OpenTAP LabVIEW.pdf" --title "OpenTAP LabVIEW Plugin"
+                            popd
+
+                            # build plugin
+                            dotnet build -c Release
+
+                            # build package
+                            pushd .\\bin\\Release
+                            .\\tap package create ..\\..\\package.xml
+                            popd                    
+                            """
+                        
+                        echo "get version"
+                        version = powershell(returnStdout: true, script: "write-output (.\\bin\\Release\\tap sdk gitversion | Select-Object -Last 1)").trim()
+                        projectConfig['versionInfo']['version'] = "${projectConfig.projectName}-${version}" 
+                    }
+
+                }
+            }
+        }
+
+        stage('Black Duck Scan')
+        {
+            agent { label "${PipelineKpcBuildAgents.GetAgentLabelExpression(projectConfig.scanAgentLabel)}" }
+            steps
+            {
+                script
+                {                    
+                    projectConfig.scanAgent = env.NODE_NAME
+                    projectConfig.projectScanName = projectConfig['versionInfo']['version']
+                    projectConfig.projectVersionName = projectConfig['versionInfo']['version']
+                    BlackDuckScan(projectConfig)
+                }
+            }
+        }
+    }
+    post
+    {
+        // =====================================================================
+        // CUSTOMIZATION_TODO
+        // =====================================================================
+        always
+        {
+            script
+            {
+                PipelineKpcBuildAgents.Release(projectConfig)
+            }
+        }
+    }
+}
+
+// =====================================================================
+// Other private methods/steps for custom stages
+// =====================================================================
+
+
+
+// =====================================================================
+// Developer Notes
+// =====================================================================
