@@ -9,6 +9,9 @@ namespace OpenTap.LabView.Types
 {
     public class LabViewMemberData : IMemberData
     {
+        // Keeps track of cluster types.
+        internal static readonly HashSet<Type> KnownClusterTypes = new HashSet<Type>();
+        
         public readonly object DefaultValue;
         public LabViewMemberData(LabViewTypeData labViewTypeData, ParameterInfo parameterInfo)
         {
@@ -46,6 +49,17 @@ namespace OpenTap.LabView.Types
             {
                 TypeDescriptor = TypeData.FromType(typeof(Input<>).MakeGenericType(td.Type));
             }
+
+            if (TypeDescriptor is TypeData td2 && td2.Type.IsValueType && td2.Type.IsPrimitive == false&& td2.Type.IsEnum == false)
+            {
+                // it's probably a cluster!
+                KnownClusterTypes.Add(td2.Type);
+                if (!parameterInfo.IsOut)
+                {
+                    TypeDescriptor = TypeData.FromType(typeof(Input<>).MakeGenericType(td2.Type));
+                }
+            }
+            
             Writable = writable;
             Readable = true;
             if (TypeDescriptor.DescendsTo(typeof(double)))
@@ -67,6 +81,11 @@ namespace OpenTap.LabView.Types
             if (TypeDescriptor.DescendsTo(typeof(string)))
             {
                 DefaultValue = "";
+            }
+            if (TypeDescriptor.DescendsTo(typeof(Enum)))
+            {
+                if (TypeDescriptor is TypeData tdEnum)
+                    DefaultValue = Enum.GetValues(tdEnum.Type).GetValue(0);
             }
         }
 
