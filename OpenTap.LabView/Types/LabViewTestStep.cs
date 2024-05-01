@@ -11,9 +11,20 @@ namespace OpenTap.LabView.Types
     class LabViewTestStep : TestStep
     {
         internal readonly LabViewTypeData PluginType;
+
+        readonly LabViewMemberData[] outputMembers;
+        public IEnumerable<string> AvailableOutputs => outputMembers.Select(x => x.Name);
+        
+        [Display("Publish Results", Group:"Utils", Order:1)]
+        [AvailableValues(nameof(AvailableOutputs))]
+        public List<string> ResultMembers { get; set; } = new List<string>();
+        
+        [Display("Log Inputs and Outputs", Group:"Utils", Order:1)]
+        public bool LogMembers { get; set; } = true;
+        
         public LabViewTestStep(LabViewTypeData type)
         {
-            
+            outputMembers = type.GetMembers().OfType<LabViewMemberData>().ToArray();
             this.PluginType = type;
             Values = new Dictionary<string, object>();
             
@@ -63,8 +74,7 @@ namespace OpenTap.LabView.Types
                 {
                     throw new Exception($"{viEx.ErrorSource} (Error Code: {viEx.ErrorCode})");
                 }
-                else
-                    throw;
+                throw;
             }
 
             for (int i = 0; i < p.Length; i++)
@@ -73,6 +83,27 @@ namespace OpenTap.LabView.Types
                 // if its an output, the value should be written back.
                 if (p[i].IsOut)
                     Values[p[i].Name] = parameters[i];
+            }
+
+            if (ResultMembers.Any())
+            {
+                var columns = ResultMembers.Select(outp => outputMembers.FirstOrDefault(x => x.Name == outp)).Where(item => item != null)
+                    .Select(item =>
+                    {
+                        var result = item.GetValue(this);
+                        if (!(result is Array))
+                        {
+                            var arr = Array.CreateInstance(result.GetType(), 1);
+                            arr.SetValue(result, 0);
+                            result = arr;
+                        }
+                        return new ResultColumn(item.Name, (Array)result);
+                    }) .ToArray();
+                Results.PublishTable(new ResultTable(this.GetFormattedName(), columns));
+            }
+            if(LogMembers)
+            {
+                Log.Info("{0}", string.Join(", ", Values.Select(kv => $"{kv.Key}: {LabViewTypeData.LvObjectConvertToString(kv.Value)}")));
             }
         }
     }

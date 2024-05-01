@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using NationalInstruments.LabVIEW.Interop;
 using OpenTap.LabView.Utils;
 
 namespace OpenTap.LabView.Types
@@ -11,6 +12,20 @@ namespace OpenTap.LabView.Types
     /// </summary>
     class LabViewTypeData : ITypeData
     {
+        internal static string LvObjectConvertToString(object obj)
+        {
+            if(obj is LVClassRoot lvClassRoot)
+                return  $"LabViewObject: 0x{lvClassRoot.InstanceIndex.ToInt64():X8}";
+            
+            var t = obj.GetType();
+            if (LabViewMemberData.KnownClusterTypes.Contains(t))
+            {
+
+                // just print the pointer value of the object.
+                return string.Join(" | ", t.GetFields().Select(field => LvObjectConvertToString(field.GetValue(obj))));
+            }
+            return obj?.ToString() ?? "<null>";
+        } 
         public override string ToString() => $"labview:{this.Name}";
         
         IMemberData[] customMemberDataCache;
