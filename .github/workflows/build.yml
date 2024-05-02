@@ -18,12 +18,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Build Writerside docs using Docker
-        uses: JetBrains/writerside-github-action@v4
+      - uses: baileyjm02/markdown-to-pdf@v1
+        name: Build Docs
         with:
-          instance: ${{ env.INSTANCE }}
-          artifact: ${{ env.ARTIFACT }}
-          docker-version: ${{ env.DOCKER_VERSION }}
+          input_dir: doc
+          output_dir: pdfs
+          images_dir: docs/images
+          # for example <img src="./images/file-name.png">
+          image_import: ./images
+          # Default is true, can set to false to only get PDF files
+          build_html: false
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
