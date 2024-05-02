@@ -6,7 +6,31 @@ on:
 env:
   OPENTAP_ANSI_COLORS: true
   OPENTAP_NO_UPDATE_CHECK: true
+  INSTANCE: 'Writerside/l'
+  ARTIFACT: 'pdfSourceL.pdf'
+  DOCKER_VERSION: '241.15989'
+
 jobs:
+  build-doc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build Writerside docs using Docker
+        uses: JetBrains/writerside-github-action@v4
+        with:
+          instance: ${{ env.INSTANCE }}
+          artifact: ${{ env.ARTIFACT }}
+          docker-version: ${{ env.DOCKER_VERSION }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact
+          path: artifacts/${{ env.ARTIFACT }}
+          retention-days: 7
   build:
     runs-on: ubuntu-20.04
     steps:
