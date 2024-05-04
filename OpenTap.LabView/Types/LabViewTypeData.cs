@@ -69,13 +69,20 @@ namespace OpenTap.LabView.Types
             {
                 var parser = new Parser(new StringReader(docString));
                 var str = new YamlStream();
-                str.Load(parser);
-                var docs = str.Documents.FirstOrDefault();
-                if (docs?.RootNode is YamlScalarNode rootScalar)
+                try
                 {
-                    description = rootScalar?.Value;
+                    str.Load(parser);
+                    var docs = str.Documents.FirstOrDefault();
+                    if (docs?.RootNode is YamlScalarNode rootScalar)
+                    {
+                        description = rootScalar?.Value;
+                    }
+                    root = docs?.RootNode as YamlMappingNode;
                 }
-                root = docs?.RootNode as YamlMappingNode;   
+                catch
+                {
+                    description = docString;
+                }
             }
             if (root != null)
             {

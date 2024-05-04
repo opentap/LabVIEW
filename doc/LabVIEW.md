@@ -1,4 +1,4 @@
-# LabVIEW
+# OpenTAP And LabVIEW
 
 This document describes how to use the LabVIEW OpenTAP plugin.
 
@@ -26,19 +26,29 @@ The first step in getting your LabVIEW project to run inside OpenTAP is to use t
 
 This is done by building adding a build specification targeting a .NET Interop Assembly as seen below.
 
-![Adding_A_Build_Specification.png](images/Adding_A_Build_Specification.png)
+![Adding A Build Specification](images/Adding_A_Build_Specification.png)
 
 This will open a dialog for configuring your build specification. We recommend giving fitting names to the items inside this dialog, but do not change the .NET interop assembly class name. This must be `LabVIEWExports`.
 
 Take note of the destination directory, for an easy deployment, you can set this to be your TAP installation folder or somewhere inside `[TapInstallation]/Packages/[MyProjectName]`.
 
-![Assembly_Build_Properties.png](images/Assembly_Build_Properties.png)
+![Assembly Build Properties.png](images/Assembly_Build_Properties.png)
 
 Most other categories can be ignored, but the crucial part is specifying the Source Files as seen below. Here you must export all the vi's that you are interested in calling directly into from OpenTAP.
 
-![Source_Files_Specification.png](images/Source_Files_Specification.png)
+![Source Files Specification.png](images/Source_Files_Specification.png)
 
 ## Results and Logging
+
+Sometimes it is wanted to store inputs or outputs as results or writing them to the log.
+
+To save them as results, select the settings in the Publish Result drop-down under test step settings. 
+To write the values to the log, select the Log Inputs and Outputs.
+
+![Selecting Results](images/SelectResults.png)
+
+The results will be stored under a result name matching the name of the test step and column names matching the names of the selected settings.
+For more information about results see the [OpenTAP Developer Guide](https://doc.opentap.io/Developer%20Guide/Test%20Step/#publishing-results).
 
 ## Improving Usability with Annotations
 
@@ -52,15 +62,15 @@ The types of information that can be included are:
 
 Refer to the image below for a practical example showcasing these annotations.
 
-![AnnotationsUsability.png](images/AnnotationsUsability.png)
+![Improved Usability with Annotations](images/AnnotationsUsability.png)
 
 To add this information, use the Define Prototype dialog inside the LabVIEW project build specifications as seen below:
 
-![AnnotateInDefinePrototype](images/AnnotateInDefinePrototype.png)
+![Annotate in Define Prototype](images/AnnotateInDefinePrototype.png)
 
 In the Define Prototype dialog, the normal VI documentation can be used as-is.  In that case it will be used as the test step description. A practical example of that can be seen below:
 
-![DefaultDocumentation.png](images/DefaultDocumentation.png)
+![Default Documentation](images/DefaultDocumentation.png)
 
 To provide a higher degree of documentation, it can be written in YAML format inside the Custom Documentation in the Define Prototype dialog.
 

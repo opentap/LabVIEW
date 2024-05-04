@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>OpenTap.LabView.Test1</name>
+  </assembly>
+  <members>
+    <member name="M:OpenTap.LabView.Test1.Test__32Class__321.Set___32Property(OpenTap.LabView.Test1.Test__32Class__321,System.Double,OpenTap.LabView.Test1.Test__32Class__321@,System.Double@)">
+      <summary></summary>
+      <returns>Void</returns>
+    </member>
+    <member name="M:OpenTap.LabView.Test1.Test__32Class__321.Test___32Class___321(System.Double,System.Double,System.Boolean,OpenTap.LabView.Test1.Test__32Class__321@)">
+      <summary></summary>
+      <returns>Void</returns>
+    </member>
+    <member name="M:OpenTap.LabView.Test1.LabVIEWExports.Multiply(System.Double,System.Double,System.Double@)">
+      <summary></summary>
+      <returns>Void</returns>
+    </member>
+    <member name="M:OpenTap.LabView.Test1.LabVIEWExports.Test___32Call___32SubVi">
+      <summary></summary>
+      <returns>Void</returns>
+    </member>
+    <member name="M:OpenTap.LabView.Test1.LabVIEWExports.Array___32Indexing(System.Double[],System.Double,System.Double@)">
+      <summary>This is Test 3 vi.</summary>
+      <returns>Void</returns>
+    </member>
+    <member name="M:OpenTap.LabView.Test1.LabVIEWExports.Add(System.Double,System.Double,System.Double@)">
+      <summary>A : Unit("Hz")</summary>
+      <returns>Void</returns>
+    </member>
+    <member name="M:OpenTap.LabView.Test1.LabVIEWExports.Bundle(System.Double,System.String,System.Boolean,OpenTap.LabView.Test1.Output__32cluster@)">
+      <summary></summary>
+      <returns>Void</returns>
+    </member>
+    <member name="M:OpenTap.LabView.Test1.LabVIEWExports.Unbundle(OpenTap.LabView.Test1.Output__32cluster,System.Double@,System.Boolean@,System.String@)">
+      <summary></summary>
+      <returns>Void</returns>
+    </member>
+    <member name="M:OpenTap.LabView.Test1.LabVIEWExports.Enum(OpenTap.LabView.Test1.Enum,System.String@)">
+      <summary></summary>
+      <returns>Void</returns>
+    </member>
+    <member name="M:OpenTap.LabView.Test1.LabVIEWExports.InputOutputAnnotation(System.Double,System.Double@)">
+      <summary>Display: Input Output Annotations #The test step name you want to show the user.
+Description: This test step demonstrates how annotations can work to improve usability of a test step.
+Input1:
+   Display: Input 1 # The setting name you want the show the user.
+   Description: This setting demonstrates how the "display name" and unit can be set. # This turns into a tooltip on the setting.
+   Unit: s # The unit of the value.
+Output1:
+   Display: Output 1
+   Description: This setting just takes the value of Input 1 and outputs it from the VI.
+   Unit: s</summary>
+      <returns>Void</returns>
+    </member>
+    <member name="M:OpenTap.LabView.Test1.LabVIEWExports.Error___32Handling(System.String,System.Double)">
+      <summary>Display: Error Handling
+Description: An example of a VI that creates an error output.</summary>
+      <returns>Void</returns>
+    </member>
+    <member name="M:OpenTap.LabView.Test1.LabVIEWExports.Add____32Integers(System.Int64,System.Int64,System.Int64@)">
+      <summary>Display: Add Integers
+A:
+   Display: A
+B: 
+   Name: B
+APlusB:
+   Display: A + B</summary>
+      <returns>Void</returns>
+    </member>
+  </members>
+</doc>
