@@ -18,22 +18,22 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: baileyjm02/markdown-to-pdf@v1
-        name: Build Docs
+      - name: Setup OpenTAP
+        uses: opentap/setup-opentap@main
         with:
-          input_dir: doc
-          output_dir: pdfs
-          images_dir: docs/images
-          # for example <img src="./images/file-name.png">
-          image_import: ./images
-          # Default is true, can set to false to only get PDF files
-          build_html: false
+          version: 9.23.0
+          packages: 'DocumentationGeneration:1.0.2'
+          additional-repository: 'https://test-automation.pw.keysight.com/api/packages'
+          additional-repository-token: '${{ secrets.KS8500TOKEN }}'
+      - name: Build Docs
+        run: tap generate-pdf LabVIEW.md --out OpenTapLabView.pdf --title "OpenTAP LabVIEW Plugin"
+        working-directory: doc
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: artifact
-          path: artifacts/${{ env.ARTIFACT }}
+          path: doc/OpenTapLabView.pdf
           retention-days: 7
   build:
     runs-on: ubuntu-20.04
