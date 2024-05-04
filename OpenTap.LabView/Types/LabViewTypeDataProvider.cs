@@ -125,13 +125,20 @@ namespace OpenTap.LabView.Types
                             // this usually takes around 3 seconds.
                             TapThread.Start(() =>
                             {
-                                lock (lvRuntimeLoadLock)
+                                try
                                 {
-                                    var sw2 = Stopwatch.StartNew();
-                                    // this where the magic happens
-                                    fld.GetValue(null);
-                                    var el = sw2.Elapsed;
-                                    log.Debug(el, $"Started LabVIEW runtime for {asm.Location}.");
+                                    lock (lvRuntimeLoadLock)
+                                    {
+                                        var sw2 = Stopwatch.StartNew();
+                                        // this where the magic happens
+                                        fld.GetValue(null);
+                                        var el = sw2.Elapsed;
+                                        log.Debug(el, $"Started LabVIEW runtime for {asm.Location}.");
+                                    }
+                                }
+                                catch
+                                {
+                                    
                                 }
                             });
                         }
