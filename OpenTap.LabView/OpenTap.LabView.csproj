@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="OpenTAP" Version="$(OpenTapVersion)" />
+    <PackageReference Include="System.Reflection.Metadata" Version="1.6.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
     <AdditionalOpenTapPackage Include="Expressions" Version="1"/>
@@ -26,12 +27,17 @@
     <Reference Include="NationalInstruments.LabVIEW.Interop">
       <HintPath>../Dependency/NationalInstruments.LabVIEW.Interop.dll</HintPath>
     </Reference>
+    <PackageReference Include="YamlDotNet" Version="15.1.2"/>
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\Dependency\OpenTap.LabView.Test1.dll">
       <Link>OpenTap.LabView.Test1.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Dependency\OpenTap.LabView.Test1.xml">
+      <Link>OpenTap.LabView.Test1.xml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

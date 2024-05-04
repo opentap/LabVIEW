@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
 using NationalInstruments.LabVIEW.Interop;
@@ -13,17 +14,21 @@ namespace OpenTap.LabView.Types
         internal static readonly HashSet<Type> KnownClusterTypes = new HashSet<Type>();
         
         public readonly object DefaultValue;
-        public LabViewMemberData(LabViewTypeData labViewTypeData, ParameterInfo parameterInfo)
+        public LabViewMemberData(LabViewTypeData labViewTypeData, ParameterInfo parameterInfo, string displayName = null, string description = null, string unit = null)
         {
-
+        
             Attributes = Array.Empty<object>();
             bool writable = true;
             Name = parameterInfo.Name;
+            if (displayName == null)
+            {
+                displayName = Name.FixString();
+            }
             if (parameterInfo.IsOut)
             {
                 Attributes = new object[]
                 {
-                    new DisplayAttribute(Name.FixString()), new OutputAttribute(), new BrowsableAttribute(true), new XmlIgnoreAttribute()
+                    new DisplayAttribute(displayName, Description: description), new OutputAttribute(), new BrowsableAttribute(true), new XmlIgnoreAttribute()
                 };
                 writable = false;
             }
@@ -31,8 +36,12 @@ namespace OpenTap.LabView.Types
             {
                 Attributes = new object[]
                 {
-                    new DisplayAttribute(Name.FixString())
+                    new DisplayAttribute(displayName, Description: description)
                 };
+            }
+            if (unit != null)
+            {
+                Attributes = Attributes.Append(new UnitAttribute(unit)).ToArray();
             }
 
 

@@ -17,6 +17,7 @@
 		<Item Name="Call SubVi.vi" Type="VI" URL="../Call SubVi.vi"/>
 		<Item Name="Enum.vi" Type="VI" URL="../Enum.vi"/>
 		<Item Name="Error Handling Test.vi" Type="VI" URL="../Error Handling Test.vi"/>
+		<Item Name="InputOutputAnnotation.vi" Type="VI" URL="../InputOutputAnnotation.vi"/>
 		<Item Name="Multiply.vi" Type="VI" URL="../Multiply.vi"/>
 		<Item Name="Test Class 1.lvclass" Type="LVClass" URL="../Test Class 1/Test Class 1.lvclass"/>
 		<Item Name="Unbundle.vi" Type="VI" URL="../Unbundle.vi"/>
@@ -32,7 +33,6 @@
 				<Property Name="App_INI_GUID" Type="Str">{EBFC67D1-84BD-4613-81BA-1A94370AE30F}</Property>
 				<Property Name="App_serverConfig.httpPort" Type="Int">8002</Property>
 				<Property Name="App_serverType" Type="Int">0</Property>
-				<Property Name="App_winsec.description" Type="Str">http://www.Keys.com</Property>
 				<Property Name="Bld_autoIncrement" Type="Bool">true</Property>
 				<Property Name="Bld_buildCacheID" Type="Str">{65371357-6200-4587-A554-FA3596D6F860}</Property>
 				<Property Name="Bld_buildSpecName" Type="Str">OpenTap.LabView.Test1</Property>
@@ -43,7 +43,7 @@
 				<Property Name="Bld_localDestDirType" Type="Str">relativeToCommon</Property>
 				<Property Name="Bld_modifyLibraryFile" Type="Bool">true</Property>
 				<Property Name="Bld_previewCacheID" Type="Str">{7F60A1B0-4C2C-4F91-AC61-2B98844F767E}</Property>
-				<Property Name="Bld_version.build" Type="Int">19</Property>
+				<Property Name="Bld_version.build" Type="Int">21</Property>
 				<Property Name="Bld_version.major" Type="Int">1</Property>
 				<Property Name="Destination[0].destName" Type="Str">OpenTap.LabView.Test1.dll</Property>
 				<Property Name="Destination[0].path" Type="Path">../OpenTap.LabView.Test1.dll</Property>
@@ -59,7 +59,7 @@
 				<Property Name="DotNETAssembly_signAssembly" Type="Bool">false</Property>
 				<Property Name="DotNETAssembly_StrongNameKeyFileItemID" Type="Ref"></Property>
 				<Property Name="DotNETAssembly_StrongNameKeyGUID" Type="Str">{355D8948-4820-4E96-A734-35D90A751E4D}</Property>
-				<Property Name="Source[0].itemID" Type="Str">{99FC8B19-9E3B-4989-B6DD-6F9FE5A84948}</Property>
+				<Property Name="Source[0].itemID" Type="Str">{B58FEE0C-82CF-4984-8C29-5984E4008DAE}</Property>
 				<Property Name="Source[0].type" Type="Str">Container</Property>
 				<Property Name="Source[1].destinationIndex" Type="Int">0</Property>
 				<Property Name="Source[1].ExportedAssemblyVI.VIProtoInfo[0]VIProtoConNum" Type="Int">-1</Property>
@@ -135,6 +135,29 @@
 				<Property Name="Source[10].itemID" Type="Ref">/My Computer/Enum.vi</Property>
 				<Property Name="Source[10].sourceInclusion" Type="Str">TopLevel</Property>
 				<Property Name="Source[10].type" Type="Str">ExportedAssemblyVI</Property>
+				<Property Name="Source[11].destinationIndex" Type="Int">0</Property>
+				<Property Name="Source[11].ExportedAssemblyVI.VIProtoInfo[0]VIProtoConNum" Type="Int">-1</Property>
+				<Property Name="Source[11].ExportedAssemblyVI.VIProtoInfo[0]VIProtoDataType" Type="Str">void</Property>
+				<Property Name="Source[11].ExportedAssemblyVI.VIProtoInfo[0]VIProtoDir" Type="Int">1</Property>
+				<Property Name="Source[11].ExportedAssemblyVI.VIProtoInfo[0]VIProtoIutputIdx" Type="Int">-1</Property>
+				<Property Name="Source[11].ExportedAssemblyVI.VIProtoInfo[0]VIProtoName" Type="Str">returnvalue</Property>
+				<Property Name="Source[11].ExportedAssemblyVI.VIProtoInfo[0]VIProtoOutputIdx" Type="Int">-1</Property>
+				<Property Name="Source[11].ExportedAssemblyVI.VIProtoInfo[1]MethodName" Type="Str">InputOutputAnnotation</Property>
+				<Property Name="Source[11].ExportedAssemblyVI.VIProtoInfo[1]VIName" Type="Str">InputOutputAnnotation.vi</Property>
+				<Property Name="Source[11].ExportedAssemblyVI.VIProtoInfo[1]VIProtoConNum" Type="Int">11</Property>
+				<Property Name="Source[11].ExportedAssemblyVI.VIProtoInfo[1]VIProtoDataType" Type="Str">DBL</Property>
+				<Property Name="Source[11].ExportedAssemblyVI.VIProtoInfo[1]VIProtoDir" Type="Int">0</Property>
+				<Property Name="Source[11].ExportedAssemblyVI.VIProtoInfo[1]VIProtoIutputIdx" Type="Int">11</Property>
+				<Property Name="Source[11].ExportedAssemblyVI.VIProtoInfo[1]VIProtoName" Type="Str">Input__321</Property>
+				<Property Name="Source[11].ExportedAssemblyVI.VIProtoInfo[1]VIProtoOutputIdx" Type="Int">-1</Property>
+				<Property Name="Source[11].ExportedAssemblyVI.VIProtoInfoVIDocumentation" Type="Str">Display: "Input Output Annotations"
+Description: "This test step demonstrates how annotations can work to improve usability of a test step"</Property>
+				<Property Name="Source[11].ExportedAssemblyVI.VIProtoInfoVIDocumentationEnabled" Type="Int">1</Property>
+				<Property Name="Source[11].ExportedAssemblyVI.VIProtoInfoVIIsNamesSanitized" Type="Int">1</Property>
+				<Property Name="Source[11].ExportedAssemblyVI.VIProtoInfoVIProtoItemCount" Type="Int">2</Property>
+				<Property Name="Source[11].itemID" Type="Ref">/My Computer/InputOutputAnnotation.vi</Property>
+				<Property Name="Source[11].sourceInclusion" Type="Str">TopLevel</Property>
+				<Property Name="Source[11].type" Type="Str">ExportedAssemblyVI</Property>
 				<Property Name="Source[2].destinationIndex" Type="Int">0</Property>
 				<Property Name="Source[2].ExportedAssemblyVI.VIProtoInfo[0]MethodName" Type="Str">Test___32Call___32SubVi</Property>
 				<Property Name="Source[2].ExportedAssemblyVI.VIProtoInfo[0]VIName" Type="Str">Test Call SubVi.vi</Property>
@@ -425,11 +448,11 @@
 				<Property Name="Source[9].itemID" Type="Ref">/My Computer/Unbundle.vi</Property>
 				<Property Name="Source[9].sourceInclusion" Type="Str">TopLevel</Property>
 				<Property Name="Source[9].type" Type="Str">ExportedAssemblyVI</Property>
-				<Property Name="SourceCount" Type="Int">11</Property>
-				<Property Name="TgtF_companyName" Type="Str">Keys</Property>
+				<Property Name="SourceCount" Type="Int">12</Property>
+				<Property Name="TgtF_companyName" Type="Str">Keysight</Property>
 				<Property Name="TgtF_fileDescription" Type="Str">OpenTap.LabView.Test1</Property>
 				<Property Name="TgtF_internalName" Type="Str">OpenTap.LabView.Test1</Property>
-				<Property Name="TgtF_legalCopyright" Type="Str">Copyright © 2024 Keys</Property>
+				<Property Name="TgtF_legalCopyright" Type="Str">Copyright © 2024 Keysight</Property>
 				<Property Name="TgtF_productName" Type="Str">OpenTap.LabView.Test1</Property>
 				<Property Name="TgtF_targetfileGUID" Type="Str">{E5260485-3FD4-45D0-AC99-D606B182F313}</Property>
 				<Property Name="TgtF_targetfileName" Type="Str">OpenTap.LabView.Test1.dll</Property>
