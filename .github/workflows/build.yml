@@ -29,7 +29,9 @@ jobs:
         packages: 'DocumentationGeneration:1.0.2'
         additional-repository: 'https://test-automation.pw.keysight.com/api/packages'
         additional-repository-token: '${{ secrets.KS8500TOKEN }}'
-    
+    - name: Build Docs
+      run: tap generate-pdf LabVIEW.md --out ../bin/Release/OpenTap\ LabVIEW.pdf --title "OpenTAP LabVIEW Plugin"
+      working-directory: doc
       
     - name: Build
       run: |
@@ -44,11 +46,9 @@ jobs:
         TAP_SIGN_AUTH: ${{ secrets.TAP_SIGN_AUTH }}
         TAP_SIGN_CERT: ${{ github.workspace }}/sign.cer
         Ks8500Token: ${{secrets.KS8500TOKEN}}
-    - name: Build Docs
-      run: tap generate-pdf LabVIEW.md --out ../bin/Release/OpenTap\ LabVIEW.pdf --title "OpenTAP LabVIEW Plugin"
-      working-directory: doc
-    - name: Build Package
-      run: ./tap package create --verbose -o LabVIEW.Example.TapPackage ../../package.example.xml
+    
+    - name: Build Example Package
+      run: ./tap package create --verbose ../../package.example.xml
       working-directory: bin/Release
 
     
