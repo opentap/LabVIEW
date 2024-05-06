@@ -24,7 +24,7 @@ Many more examples like this can be found inside the LabVIEW Examples Package.
 
 The first step in getting your LabVIEW project to run inside OpenTAP is to use the LabVIEW Application Builder plugin to build your project into a .NET DLL.
 
-This is done by building adding a build specification targeting a .NET Interop Assembly as seen below.
+This is done by adding a build specification targeting a .NET Interop Assembly as seen below.
 
 ![Adding A Build Specification](images/Adding_A_Build_Specification.png)
 
@@ -55,7 +55,7 @@ For more information about results see the [OpenTAP Developer Guide](https://doc
 Extra information can be added when building the wrapper DLL. This information can be used to provide extra information to the user using the test step.
 
 The information itself is located inside a XML file with a name that otherwise matches the name of the compiled DLL.
-If you want to enable this feature, the XML files must be located  with the DLL inside the OpenTAP folder.
+If you want to enable this feature, the XML file must be located  with the DLL inside the OpenTAP folder.
 
 The types of information that can be included are:
 
@@ -153,7 +153,7 @@ The below list describes the currently well working exported types.
 ### Error Clusters
 Error clusters are how errors occur inside LabVIEW. Many VIs has no side effects and hence produce no errors, but some might.
 
-An error is VI is represented by an error code and a message. When an VI-based test step has an error, it is handled by throwing an exception which will cause the test step to fail with an Error verdict.
+An error in VI is represented by an error code and a message. When an VI-based test step has an error, it is handled by throwing an exception which will cause the test step to fail with an Error verdict.
 
 See the Error Handling example for a practical example.
 
