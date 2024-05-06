@@ -22,6 +22,11 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
+    - name: Cache Packages
+      uses: actions/cache@v3
+      with:
+        key: '9.23.0-DocumentationGeneration1.0.2'
+        path: ~/.local/share/OpenTap/PackageCache
     - name: Setup OpenTAP
       uses: opentap/setup-opentap@main
       with:
@@ -30,7 +35,7 @@ jobs:
         additional-repository: 'https://test-automation.pw.keysight.com/api/packages'
         additional-repository-token: '${{ secrets.KS8500TOKEN }}'
     - name: Build Docs
-      run: tap generate-pdf LabVIEW.md --out ../bin/Release/OpenTap\ LabVIEW.pdf --title "OpenTAP LabVIEW Plugin"
+      run: tap generate-pdf LabVIEW.md --out ../bin/Release/OpenTAP\ LabVIEW.pdf --title "OpenTAP LabVIEW Plugin"
       working-directory: doc
       
     - name: Build
