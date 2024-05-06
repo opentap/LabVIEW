@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
+using System.Reflection.Metadata.Ecma335;
 using System.Reflection.PortableExecutable;
 using System.Xml.Linq;
 using NationalInstruments.LabVIEW.Interop;
@@ -94,9 +95,23 @@ namespace OpenTap.LabView.Types
         /// <summary>  Priority slightly higher than default (required). </summary>
         public double Priority => 1;
 
+        static bool IsLvClassRoot(Type td0)
+        {
+            return typeof(LVClassRoot).IsAssignableFrom(td0);
+            return false;
+        }
+        
         /// <summary> Load LabView DLLs and load labview types. </summary>
         public void Search()
         {
+            try
+            {
+                IsLvClassRoot(typeof(object));
+            }
+            catch
+            {
+                log.Error("Unable to load LabVIEW Runtime Assembly. Is LabVIEW or the LabVIEW runtime environment installed?");
+            }
             var sw = Stopwatch.StartNew();
             log.Debug("Searching for LabVIEW plugins.");
             object lvRuntimeLoadLock = new object();
@@ -187,9 +202,17 @@ namespace OpenTap.LabView.Types
 
                 foreach (Type type in types)
                 {
-                    if (typeof(LVClassRoot).IsAssignableFrom(type) == false && type.Name != "LabVIEWExports")
+                    try
+                    {
+                        if (IsLvClassRoot(type) == false && type.Name != "LabVIEWExports")
+                            continue;
+                    }
+                    catch
+                    {
+                        // this is already logged.
                         continue;
-             
+                    }
+
                     var declaredMethods = type.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly);
                     foreach (var method in declaredMethods)
                     {
