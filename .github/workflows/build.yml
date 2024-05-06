@@ -56,7 +56,6 @@ jobs:
       run: ./tap package create --verbose ../../package.example.xml
       working-directory: bin/Release
 
-    
     # - name: Run Unit Tests
     #  working-directory: bin/Release
     #  run: ./tap unit-test run
@@ -70,23 +69,20 @@ jobs:
           bin/Release/*.TapPackage
 
   publish:
-    if: false
-    environment: packages.opentap.io
     runs-on: ubuntu-20.04
     needs: build
     steps:
     - name: Download binaries
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: TapPackage
         path: bin/Release/
     - name: Setup OpenTAP
       uses: opentap/setup-opentap@v1.0
       with:
-        version: 9.22.0-rc.2
+        version: 9.23.0
         packages: 'Repository Client:beta'
     - name: Publish Packages
       working-directory: bin/Release
-      run: |
-        tap repo upload --repository http://packages.opentap.io --token ${{ secrets.OPENTAP_IO_TOKEN }} LabVIEW.*.TapPackage
+      run: tap repo upload --repository https://test-automation.pw.keysight.com/api/packages --token ${{ secrets.KS8500TOKEN }} LabVIEW*.TapPackage
       
