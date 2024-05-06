@@ -1,4 +1,4 @@
-# OpenTAP And LabVIEW
+# The LabVIEW OpenTAP Plugin
 
 This document describes how to use the LabVIEW OpenTAP plugin.
 
@@ -53,6 +53,9 @@ For more information about results see the [OpenTAP Developer Guide](https://doc
 ## Improving Usability with Annotations
 
 Extra information can be added when building the wrapper DLL. This information can be used to provide extra information to the user using the test step.
+
+The information itself is located inside a XML file with a name that otherwise matches the name of the compiled DLL.
+If you want to enable this feature, the XML files must be located  with the DLL inside the OpenTAP folder.
 
 The types of information that can be included are:
 
@@ -153,3 +156,22 @@ Error clusters are how errors occur inside LabVIEW. Many VIs has no side effects
 An error is VI is represented by an error code and a message. When an VI-based test step has an error, it is handled by throwing an exception which will cause the test step to fail with an Error verdict.
 
 See the Error Handling example for a practical example.
+
+## Debugging
+
+Debugging the VI code is supported, either remotely or locally. To enable it, it must be enabled inside the build settings.
+
+Right-click your build specification and select Advanced. Then click enable debugging as seen below. 
+
+![Enabling VI Debugging](images/ViDebugging.png)
+
+Optionally select "Wait for Debugger to Launch". This will have the effect that when you execute the first vi, it will wait for the debugger to become attached. 
+
+To attach a debugger, start your OpenTAP application and use the Operate menu to attach to it as seen below.
+
+![Attaching the LabVIEW Debugger](images/ViDebuggingAttach.png)
+
+Once this is done, it will open all VIs associated with your LabVIEW project. 
+Note that the files opened are the ones located inside the compiled DLL and not the ones inside your project.
+
+Refer to LabVIEW documentation for more information about debugging.

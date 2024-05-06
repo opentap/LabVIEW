@@ -5,7 +5,7 @@
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <OpenTapVersion>9.23.2</OpenTapVersion>
+    <OpenTapVersion>9.24.0</OpenTapVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <IsDebug>true</IsDebug>

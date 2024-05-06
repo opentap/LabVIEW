@@ -100,6 +100,7 @@ namespace OpenTap.LabView.Types
             var sw = Stopwatch.StartNew();
             log.Debug("Searching for LabVIEW plugins.");
             object lvRuntimeLoadLock = new object();
+            bool firstToStart = true;
             var allAssemblies = PluginManager.GetSearcher().Assemblies.ToArray();
 
             foreach (var asm in allAssemblies)
@@ -133,7 +134,10 @@ namespace OpenTap.LabView.Types
                                         // this where the magic happens
                                         fld.GetValue(null);
                                         var el = sw2.Elapsed;
-                                        log.Debug(el, $"Started LabVIEW runtime for {asm.Location}.");
+                                        if(firstToStart){
+                                            log.Debug(el, $"Started LabVIEW runtime.");
+                                            firstToStart = false;
+                                        }
                                     }
                                 }
                                 catch

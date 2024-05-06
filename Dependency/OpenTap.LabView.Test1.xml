@@ -20,12 +20,12 @@
       <summary></summary>
       <returns>Void</returns>
     </member>
-    <member name="M:OpenTap.LabView.Test1.LabVIEWExports.Array___32Indexing(System.Double[],System.Double,System.Double@)">
-      <summary>This is Test 3 vi.</summary>
+    <member name="M:OpenTap.LabView.Test1.LabVIEWExports.Array____32Indexing(System.Double[],System.Double,System.Double@)">
+      <summary>This VI selects an item from an array located at the given index.</summary>
       <returns>Void</returns>
     </member>
     <member name="M:OpenTap.LabView.Test1.LabVIEWExports.Add(System.Double,System.Double,System.Double@)">
-      <summary>A : Unit("Hz")</summary>
+      <summary>Adds two numbers together and returns the result.</summary>
       <returns>Void</returns>
     </member>
     <member name="M:OpenTap.LabView.Test1.LabVIEWExports.Bundle(System.Double,System.String,System.Boolean,OpenTap.LabView.Test1.Output__32cluster@)">
@@ -58,7 +58,7 @@ Output1:
 Description: An example of a VI that creates an error output.</summary>
       <returns>Void</returns>
     </member>
-    <member name="M:OpenTap.LabView.Test1.LabVIEWExports.Add____32Integers(System.Int64,System.Int64,System.Int64@)">
+    <member name="M:OpenTap.LabView.Test1.LabVIEWExports.Add______32Integers(System.Int64,System.Int64,System.Int64@)">
       <summary>Display: Add Integers
 A:
    Display: A

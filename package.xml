@@ -18,5 +18,7 @@ $(GitVersion) - Gets the version from Git in the recommended format Major.Minor.
     </File>
     <File Path="Packages/LabVIEW/NationalInstruments.LabVIEW.Interop.dll" SourcePath="NationalInstruments.LabVIEW.Interop.dll">
     </File>
+    <File Path="Packages/LabVIEW/OpenTAP LabVIEW.pdf" SourcePath="OpenTAP LabVIEW.pdf">
+    </File>
   </Files>
 </Package>
