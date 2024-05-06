@@ -15,8 +15,7 @@ $(GitVersion) - Gets the version from Git in the recommended format Major.Minor.
     <File Path="Packages/LabVIEW/OpenTap.LabView.dll" SourcePath="OpenTap.LabView.dll">
       <SetAssemblyInfo Attributes="Version"/>
       <Sign Certificate="Keysight Technologies, Inc."/>
-    </File>
-    <File Path="Packages/LabVIEW/NationalInstruments.LabVIEW.Interop.dll" SourcePath="NationalInstruments.LabVIEW.Interop.dll">
+      <IgnoreDependency>NationalInstruments.LabVIEW.Interop</IgnoreDependency>  
     </File>
     <File Path="Packages/LabVIEW/OpenTAP LabVIEW.pdf" SourcePath="OpenTAP LabVIEW.pdf">
     </File>
