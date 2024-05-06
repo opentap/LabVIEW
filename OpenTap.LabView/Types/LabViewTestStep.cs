@@ -15,11 +15,11 @@ namespace OpenTap.LabView.Types
         readonly LabViewMemberData[] outputMembers;
         public IEnumerable<string> AvailableOutputs => outputMembers.Select(x => x.Name);
         
-        [Display("Publish Results", Group:"Utils", Order:1)]
+        [Display("Publish Results", "Select which outputs or inputs should be saved as results", Group:"Utils", Order:1)]
         [AvailableValues(nameof(AvailableOutputs))]
         public List<string> ResultMembers { get; set; } = new List<string>();
         
-        [Display("Log Inputs and Outputs", Group:"Utils", Order:1)]
+        [Display("Log Inputs and Outputs", "Should outputs and inputs be logged?", Group:"Utils", Order:1)]
         public bool LogMembers { get; set; } = true;
         
         public LabViewTestStep(LabViewTypeData type)

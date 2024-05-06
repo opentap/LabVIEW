@@ -1,12 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using NationalInstruments.LabVIEW.Interop;
 using OpenTap.LabView.Utils;
+using YamlDotNet.Core;
+using YamlDotNet.RepresentationModel;
 
 namespace OpenTap.LabView.Types
 {
+    static class YamlExtensions
+    {
+        public static string GetString(this YamlMappingNode node, string key)
+        {
+            if (node.Children.TryGetValue(new YamlScalarNode(key), out var node2) && node2 is YamlScalarNode scalarNode)
+                return scalarNode.Value;
+            
+            return null;
+        }
+        public static YamlMappingNode GetNode(this YamlMappingNode node, string key)
+        {
+            if (node != null && node.Children.TryGetValue(new YamlScalarNode(key), out var node2) && node2 is YamlMappingNode mappingNode)
+                return mappingNode;
+            
+            
+            return null;
+        }
+    }
+    
     /// <summary>
     /// This class represent a type from labview transformed into OpenTAP concepts.
     /// </summary>
@@ -33,14 +56,47 @@ namespace OpenTap.LabView.Types
         
         public MethodInfo Method { get;  }
 
-        public LabViewTypeData(MethodInfo method, Type type, LabViewAssembly labViewAssembly)
+        public LabViewTypeData(MethodInfo method, Type type, LabViewAssembly labViewAssembly, string docString = null)
         {
+            string groupName = "LabVIEW";
             this.LabViewAssembly = labViewAssembly;
             Method = method;
             var attributes = new List<object>();
+            string displayName = Method.Name.FixString();
+            string description = null;
+            
+            if (docString == null) docString = "";
+            YamlMappingNode root = null;
+            if (string.IsNullOrEmpty(docString) == false)
+            {
+                var parser = new Parser(new StringReader(docString));
+                var str = new YamlStream();
+                try
+                {
+                    str.Load(parser);
+                    var docs = str.Documents.FirstOrDefault();
+                    if (docs?.RootNode is YamlScalarNode rootScalar)
+                    {
+                        description = rootScalar?.Value;
+                    }
+                    root = docs?.RootNode as YamlMappingNode;
+                }
+                catch
+                {
+                    description = docString;
+                }
+            }
+            if (root != null)
+            {
+                displayName = root.GetString("Display") ?? displayName;
+                description = root.GetString("Description") ?? description;
+                groupName = root.GetString("Group") ?? groupName;
+            }
+
+            var group = groupName.Split(new []{'\\'}, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
             
             
-            var displayAttribute = new DisplayAttribute(Method.Name.FixString(), "", null, -10000, false, type.Name == "LabVIEWExports" ? new []{"LabVIEW"} : new [] { "LabVIEW", type.Name.FixString() });
+            var displayAttribute = new DisplayAttribute(displayName, description, null, -10000, false, type.Name == "LabVIEWExports" ? group : group.Append(type.Name.FixString()).ToArray());
             attributes.Add(displayAttribute);
 
             Attributes = attributes;
@@ -50,7 +106,15 @@ namespace OpenTap.LabView.Types
             
             // parameters are the settings in this mode.
             ParameterInfo[] parameters = method.GetParameters();
-            members = parameters.Select(p => new LabViewMemberData(this, p)).ToArray();
+            members = parameters.Select(p =>
+            {
+                
+                var name = p.Name;
+                name = name.Substring(0, 1).ToUpper() + name.Substring(1);
+                var node2 = root.GetNode(p.Name) ?? root.GetNode(name);
+                var memberGroup = node2?.GetString("Group")?.Split(new []{'\\'}, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
+                return new LabViewMemberData(this, p, node2?.GetString("Display"), node2?.GetString("Description"), node2?.GetString("Unit"),memberGroup);
+            }).ToArray();
 
         }
         
