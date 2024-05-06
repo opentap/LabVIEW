@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using NationalInstruments.LabVIEW.Interop;
 using OpenTap.LabView.Utils;
 using YamlDotNet.Core;
@@ -57,6 +58,7 @@ namespace OpenTap.LabView.Types
 
         public LabViewTypeData(MethodInfo method, Type type, LabViewAssembly labViewAssembly, string docString = null)
         {
+            string groupName = "LabVIEW";
             this.LabViewAssembly = labViewAssembly;
             Method = method;
             var attributes = new List<object>();
@@ -88,11 +90,13 @@ namespace OpenTap.LabView.Types
             {
                 displayName = root.GetString("Display") ?? displayName;
                 description = root.GetString("Description") ?? description;
+                groupName = root.GetString("Group") ?? groupName;
             }
+
+            var group = groupName.Split(new []{'\\'}, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
             
             
-            
-            var displayAttribute = new DisplayAttribute(displayName, description, null, -10000, false, type.Name == "LabVIEWExports" ? new []{"LabVIEW"} : new [] { "LabVIEW", type.Name.FixString() });
+            var displayAttribute = new DisplayAttribute(displayName, description, null, -10000, false, type.Name == "LabVIEWExports" ? group : group.Append(type.Name.FixString()).ToArray());
             attributes.Add(displayAttribute);
 
             Attributes = attributes;
@@ -108,7 +112,8 @@ namespace OpenTap.LabView.Types
                 var name = p.Name;
                 name = name.Substring(0, 1).ToUpper() + name.Substring(1);
                 var node2 = root.GetNode(p.Name) ?? root.GetNode(name);
-                return new LabViewMemberData(this, p, node2?.GetString("Display"), node2?.GetString("Description"), node2?.GetString("Unit"));
+                var memberGroup = node2?.GetString("Group")?.Split(new []{'\\'}, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
+                return new LabViewMemberData(this, p, node2?.GetString("Display"), node2?.GetString("Description"), node2?.GetString("Unit"),memberGroup);
             }).ToArray();
 
         }

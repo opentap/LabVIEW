@@ -13,12 +13,12 @@
 		<Property Name="specify.custom.address" Type="Bool">false</Property>
 		<Item Name="Add Integers.vi" Type="VI" URL="../Add Integers.vi"/>
 		<Item Name="Add.vi" Type="VI" URL="../Add.vi"/>
+		<Item Name="Annotations.vi" Type="VI" URL="../Annotations.vi"/>
 		<Item Name="Array Indexing.vi" Type="VI" URL="../Array Indexing.vi"/>
 		<Item Name="Bundle.vi" Type="VI" URL="../Bundle.vi"/>
 		<Item Name="Call SubVi.vi" Type="VI" URL="../Call SubVi.vi"/>
 		<Item Name="Enum.vi" Type="VI" URL="../Enum.vi"/>
 		<Item Name="Error Handling.vi" Type="VI" URL="../Error Handling.vi"/>
-		<Item Name="InputOutputAnnotation.vi" Type="VI" URL="../InputOutputAnnotation.vi"/>
 		<Item Name="Multiply.vi" Type="VI" URL="../Multiply.vi"/>
 		<Item Name="Test Class 1.lvclass" Type="LVClass" URL="../Test Class 1/Test Class 1.lvclass"/>
 		<Item Name="Unbundle.vi" Type="VI" URL="../Unbundle.vi"/>
@@ -34,7 +34,7 @@
 				<Property Name="App_INI_GUID" Type="Str">{EBFC67D1-84BD-4613-81BA-1A94370AE30F}</Property>
 				<Property Name="App_serverConfig.httpPort" Type="Int">8002</Property>
 				<Property Name="App_serverType" Type="Int">0</Property>
-				<Property Name="App_waitDebugging" Type="Bool">false</Property>
+				<Property Name="App_waitDebugging" Type="Bool">true</Property>
 				<Property Name="Bld_autoIncrement" Type="Bool">true</Property>
 				<Property Name="Bld_buildCacheID" Type="Str">{65371357-6200-4587-A554-FA3596D6F860}</Property>
 				<Property Name="Bld_buildSpecName" Type="Str">OpenTap.LabView.Test1</Property>
@@ -45,7 +45,7 @@
 				<Property Name="Bld_localDestDirType" Type="Str">relativeToCommon</Property>
 				<Property Name="Bld_modifyLibraryFile" Type="Bool">true</Property>
 				<Property Name="Bld_previewCacheID" Type="Str">{7F60A1B0-4C2C-4F91-AC61-2B98844F767E}</Property>
-				<Property Name="Bld_version.build" Type="Int">32</Property>
+				<Property Name="Bld_version.build" Type="Int">34</Property>
 				<Property Name="Bld_version.major" Type="Int">1</Property>
 				<Property Name="Destination[0].destName" Type="Str">OpenTap.LabView.Test1.dll</Property>
 				<Property Name="Destination[0].path" Type="Path">../OpenTap.LabView.Test1.dll</Property>
@@ -111,7 +111,7 @@
 				<Property Name="Source[10].ExportedAssemblyVI.VIProtoInfo[1]VIProtoName" Type="Str">Input1</Property>
 				<Property Name="Source[10].ExportedAssemblyVI.VIProtoInfo[1]VIProtoOutputIdx" Type="Int">-1</Property>
 				<Property Name="Source[10].ExportedAssemblyVI.VIProtoInfo[2]MethodName" Type="Str">InputOutputAnnotation</Property>
-				<Property Name="Source[10].ExportedAssemblyVI.VIProtoInfo[2]VIName" Type="Str">InputOutputAnnotation.vi</Property>
+				<Property Name="Source[10].ExportedAssemblyVI.VIProtoInfo[2]VIName" Type="Str">Annotations.vi</Property>
 				<Property Name="Source[10].ExportedAssemblyVI.VIProtoInfo[2]VIProtoConNum" Type="Int">3</Property>
 				<Property Name="Source[10].ExportedAssemblyVI.VIProtoInfo[2]VIProtoDataType" Type="Str">DBL</Property>
 				<Property Name="Source[10].ExportedAssemblyVI.VIProtoInfo[2]VIProtoDir" Type="Int">1</Property>
@@ -120,18 +120,21 @@
 				<Property Name="Source[10].ExportedAssemblyVI.VIProtoInfo[2]VIProtoOutputIdx" Type="Int">3</Property>
 				<Property Name="Source[10].ExportedAssemblyVI.VIProtoInfoVIDocumentation" Type="Str">Display: Input Output Annotations #The test step name you want to show the user.
 Description: This test step demonstrates how annotations can work to improve usability of a test step.
+Group: LabVIEW \\ Annotations # Put it into a group!
 Input1:
    Display: Input 1 # The setting name you want the show the user.
    Description: This setting demonstrates how the "display name" and unit can be set. # This turns into a tooltip on the setting.
    Unit: s # The unit of the value.
+   Group: Inputs
 Output1:
    Display: Output 1
    Description: This setting just takes the value of Input 1 and outputs it from the VI.
-   Unit: s</Property>
+   Unit: s
+   Group: Outputs</Property>
 				<Property Name="Source[10].ExportedAssemblyVI.VIProtoInfoVIDocumentationEnabled" Type="Int">1</Property>
 				<Property Name="Source[10].ExportedAssemblyVI.VIProtoInfoVIIsNamesSanitized" Type="Int">1</Property>
 				<Property Name="Source[10].ExportedAssemblyVI.VIProtoInfoVIProtoItemCount" Type="Int">3</Property>
-				<Property Name="Source[10].itemID" Type="Ref">/My Computer/InputOutputAnnotation.vi</Property>
+				<Property Name="Source[10].itemID" Type="Ref">/My Computer/Annotations.vi</Property>
 				<Property Name="Source[10].sourceInclusion" Type="Str">TopLevel</Property>
 				<Property Name="Source[10].type" Type="Str">ExportedAssemblyVI</Property>
 				<Property Name="Source[11].destinationIndex" Type="Int">0</Property>

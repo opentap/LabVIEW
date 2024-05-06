@@ -43,14 +43,17 @@
     <member name="M:OpenTap.LabView.Test1.LabVIEWExports.InputOutputAnnotation(System.Double,System.Double@)">
       <summary>Display: Input Output Annotations #The test step name you want to show the user.
 Description: This test step demonstrates how annotations can work to improve usability of a test step.
+Group: LabVIEW \\ Annotations # Put it into a group!
 Input1:
    Display: Input 1 # The setting name you want the show the user.
    Description: This setting demonstrates how the "display name" and unit can be set. # This turns into a tooltip on the setting.
    Unit: s # The unit of the value.
+   Group: Inputs
 Output1:
    Display: Output 1
    Description: This setting just takes the value of Input 1 and outputs it from the VI.
-   Unit: s</summary>
+   Unit: s
+   Group: Outputs</summary>
       <returns>Void</returns>
     </member>
     <member name="M:OpenTap.LabView.Test1.LabVIEWExports.Error___32Handling(System.String,System.Double)">

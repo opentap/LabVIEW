@@ -14,12 +14,13 @@ namespace OpenTap.LabView.Types
         internal static readonly HashSet<Type> KnownClusterTypes = new HashSet<Type>();
         
         public readonly object DefaultValue;
-        public LabViewMemberData(LabViewTypeData labViewTypeData, ParameterInfo parameterInfo, string displayName = null, string description = null, string unit = null)
+        public LabViewMemberData(LabViewTypeData labViewTypeData, ParameterInfo parameterInfo, string displayName = null, string description = null, string unit = null, string[] groups = null)
         {
         
             Attributes = Array.Empty<object>();
             bool writable = true;
             Name = parameterInfo.Name;
+            
             if (displayName == null)
             {
                 displayName = Name.FixString();
@@ -28,7 +29,7 @@ namespace OpenTap.LabView.Types
             {
                 Attributes = new object[]
                 {
-                    new DisplayAttribute(displayName, Description: description), new OutputAttribute(), new BrowsableAttribute(true), new XmlIgnoreAttribute()
+                    new DisplayAttribute(displayName, Description: description, Groups: groups ?? Array.Empty<string>()), new OutputAttribute(), new BrowsableAttribute(true), new XmlIgnoreAttribute()
                 };
                 writable = false;
             }
@@ -71,30 +72,12 @@ namespace OpenTap.LabView.Types
             
             Writable = writable;
             Readable = true;
-            if (TypeDescriptor.DescendsTo(typeof(double)))
+            if (TypeDescriptor is TypeData cstype)
             {
-                DefaultValue = 0.0;
-            }
-            if (TypeDescriptor.DescendsTo(typeof(float)))
-            {
-                DefaultValue = 0.0f;
-            }
-            if (TypeDescriptor.DescendsTo(typeof(bool)))
-            {
-                DefaultValue = false;
-            }
-            if (TypeDescriptor.DescendsTo(typeof(int)))
-            {
-                DefaultValue = 0;
-            }
-            if (TypeDescriptor.DescendsTo(typeof(string)))
-            {
-                DefaultValue = "";
-            }
-            if (TypeDescriptor.DescendsTo(typeof(Enum)))
-            {
-                if (TypeDescriptor is TypeData tdEnum)
-                    DefaultValue = Enum.GetValues(tdEnum.Type).GetValue(0);
+                if(cstype.IsValueType)
+                    DefaultValue = Activator.CreateInstance(cstype.Type);
+                else if (cstype.Type == typeof(string))
+                    DefaultValue = "";
             }
         }
 

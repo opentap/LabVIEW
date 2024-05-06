@@ -81,14 +81,18 @@ In the InputOutputAnnotation VI, the following YAML text defines the documentati
 ```yaml
 Display: Input Output Annotations #The test step name you want to show the user.
 Description: This test step demonstrates how annotations can work to improve usability of a test step.
+Group: LabVIEW \ Annotations  # Place the test step in a sub group called Annotations inside a group called LabVIEW.
 Input1:
    Display: Input 1 # The setting name you want the show the user.
    Description: This setting demonstrates how the "display name" and unit can be set.  # This turns into a tooltip on the setting. 
    Unit: s  # The unit of the value.
+   Group: Inputs # Place the setting inside a group called Inputs.
 Output1:
   Display: Output 1
   Description: This setting just takes the value of Input 1 and outputs it from the VI.
   Unit: s
+  Group: Outputs # Place the setting inside a group called Outputs.
+
 ```
 
 Each input or output that should be described is referenced by the name of the exported setting. 
