@@ -142,10 +142,10 @@ The below list describes the currently well working exported types.
 | Boolean                  | ![ok.png](images/ok.png)          | This is displayed like a checkbox.                                                                           |
 | Enum                     | ![ok.png](images/ok.png)          | Exported as a .NET enum. Interaction works like a drop-down.                                                 |
 | Ring                     | ![notok.png](images/notok.png)    | Rings are exported as a unsigned 16bit value. It can be used but does not provide a user friendly interface. |
-| Set                      | ![notok.png](images/notok.png)    | Cannot be translated to .NET                                                                                 |
-| Map                      | ![notok.png](images/notok.png)    | Cannot be translated to .NET                                                                                 |
-| Waveform                 | ![notok.png](images/notok.png)    | Support to be defined                                                                                        |
-| Digital Data             | ![notok.png](images/notok.png)    | Support to be defined                                                                                        |
+| Set                      | ![notok.png](images/notok.png)    | Cannot be translated to .NET.                                                                                |
+| Map                      | ![notok.png](images/notok.png)    | Cannot be translated to .NET.                                                                                |
+| Waveform                 | ![notok.png](images/notok.png)    | Not currently supported.                                                                                     |
+| Digital Data             | ![notok.png](images/notok.png)    | Not currently supported.                                                                                     |
 | Real Matrix              | ![notok.png](images/notok.png)    | Translated to `double[,]`. Support to be defined                                                             |
 | ComboBox                 | ![notok.png](images/notok.png)    | Translated to string. Dropdown functionality not available.                                                  |
 | Complex Numbers          | ![notok.png](images/notok.png)    | Not currently supported.                                                                                     |
@@ -165,7 +165,19 @@ Right-click your build specification and select Advanced. Then click enable debu
 
 ![Enabling VI Debugging](images/ViDebugging.png)
 
-Optionally select "Wait for Debugger to Launch". This will have the effect that when you execute the first vi, it will wait for the debugger to become attached. 
+Optionally select "Wait for Debugger to Launch". This will have the effect that when you execute the first vi, it will wait for the debugger to become attached.
+
+After enabling debugging the DLL must be built again. Once it has been built with debugging enabled, the ini file accompanying the DLL must be copied to the same folder as the DLL.
+The ini file can also be used to enabled and disable debugging at a later point:
+```ini 
+;; OpenTap.LabView.Test1.ini
+[OpenTap.LabView.Test1]
+   ; ...
+DebugServerEnabled=True
+DebugServerWaitOnLaunch=False
+```
+
+If you want to enable debugging, the INI files must be located with the DLL inside the OpenTAP folder.
 
 To attach a debugger, start your OpenTAP application and use the Operate menu to attach to it as seen below.
 
