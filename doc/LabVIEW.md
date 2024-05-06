@@ -115,6 +115,7 @@ Below is an example of how this could look like:
   <Description>My LabVIEW plugin containing my LabVIEW code..</Description>
   <Files>
     <File Path="Packages/My LabVIEW Plugin/MyLabViewPlugin.dll">
+        <IgnoreDependency>NationalInstruments.LabVIEW.Interop</IgnoreDependency>
     </File>
    <File Path="Packages/My LabVIEW Plugin/MyLabViewPlugin.xml">
    </File>
