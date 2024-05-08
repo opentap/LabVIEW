@@ -1,0 +1,3 @@
+vault:
+  defaultCredentialPath: "kv/secret/team-pwsm/opentapplugins/labview"
+ 
