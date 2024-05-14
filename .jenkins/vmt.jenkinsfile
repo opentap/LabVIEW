@@ -10,9 +10,10 @@ Map vaultConfiguration = [
 ArrayList<Map> vaultSecrets = [
     [
         engineVersion: 1,
-        path: 'kv/secret/team-pwsm/opentapplugins/labview',
+        path: 'kv/secret/team-pwsm/opentapplugins/labview', 
         secretValues: [
              [envVar: 'Ks8500Token', vaultKey: 'repo-pathwave-token'],
+             [envVar: 'VmtApiKey', vaultKey: 'vmt-jwt-token']
         ]
     ]
 ]
@@ -20,25 +21,32 @@ ArrayList<Map> vaultSecrets = [
 // CUSTOMIZATION_TODO
 // =====================================================================
 // groovylint-disable-next-line
-//@Library('KOSi Pipeline Library@v5.1.2') _
-@Library('KOSi Pipeline Library@v5.1.2') _
+//@Library('KOSi Pipeline Library@v5.2.1') _
+@Library('KOSi Pipeline Library@feature/nessus-scan-timeout') _
 
 // =====================================================================
 // CUSTOMIZATION_TODO
 // =====================================================================
 Map projectConfig =
 [
-    'blackDuck': [
-        'plcStage': 'Released'
-    ],
+    'vmtProjectId': '699',
+    'vmtVersionId': '',
+    'vmtTargetVm': '127.0.0.1',
+    'jobFullName': '',
+    'projectName': 'LabVIEW',
     'scanAgentLabel': 'windows',
-    'projectName': 'LabVIEWPlugin',
-    'versionInfo': [
-        'version':  'placeholder'
-    ],
-    'sourceDirectory': '.',
+    
     'logLevel': 'debug',
-    'blackDuckExcludeTypes': 'PEAR'
+    'vmt': [
+        'url': 'https://vmt-app-int-elb.blackduck.usw2.amzn.keysight.com'
+    ],
+    'downloadArtifactoryResources': [
+        [
+            'source': 'generic-local-cloudshare/LabVIEW_Runtime/LabVIEW_Runtime_2024_Q1_x64.zip', 
+            'destination': './LabVIEW_Runtime/', 
+            'unarchive': 'true'
+        ]
+    ]
 ]
 
 // =====================================================================
@@ -160,31 +168,113 @@ pipeline
                             # build package
                             pushd .\\bin\\Release
                             .\\tap package create ..\\..\\package.xml
+                            .\\tap package create ..\\..\\package.example.xml
                             popd                    
                             """
-                        
+                       
                         version = powershell(script: """
                             write-output((.\\bin\\Release\\tap sdk gitversion | Select-Object -Last 1) -replace "\\+.*\$","")
                             """, returnStdout: true).trim()
-
-                        projectConfig['versionInfo']['version'] = "${projectConfig.projectName}-${version}" 
+                        echo "${version}"
                     }
 
                 }
             }
         }
 
-        stage('Black Duck Scan')
+        stage('Create VMT Version')
+        {
+            agent { label "${PipelineKpcBuildAgents.GetAgentLabelExpression(projectConfig.scanAgentLabel)}" }
+            steps
+            {
+                withVault([configuration: vaultConfiguration, vaultSecrets: vaultSecrets])
+                {
+                    script
+                    {
+                        versionId = powershell(script: """
+                            # Define the Headers with the Bearer Token
+
+                            \$headers = @{"Authorization" = \$env:VmtApiKey}
+                            \$body = @{
+                                "Version Name" = "${projectConfig.projectName}-${version}";
+                                "Milestone Status" = "PM";
+                                "Operating System" = "Windows 10 from Keysight Labs";
+                                "Product Type" = "SAO";
+                                "LXI Product" = "false"
+                            }
+                            
+                            \$bodyJson = \$body | ConvertTo-Json
+                            \$response = Invoke-RestMethod -Uri "${projectConfig.vmt.url}/api/v2/projects/${projectConfig.vmtProjectId}/versions/" -Method Post -Body \$bodyJson -Headers \$headers -ContentType "application/json" 
+                            \$versionId = \$response.Version.Split("/", [System.StringSplitOptions]::RemoveEmptyEntries)[-1]
+                            write-output(\$versionId)
+                            """, returnStdout: true).trim()
+
+                        projectConfig['vmtVersionId'] = "${versionId}"
+                    }
+                }
+            }            
+        }
+
+        stage('Install LabVIEW Runtime')
+        {
+            agent { label "${PipelineKpcBuildAgents.GetAgentLabelExpression(projectConfig.scanAgentLabel)}" }
+            steps
+            {
+                withVault([configuration: vaultConfiguration, vaultSecrets: vaultSecrets])
+                {
+                    script
+                    {
+                        echo "restore OpenTAP dependencies"                 
+                        echo "Downloading LabVIEW Runtime"
+                        DownloadFilesFromArtifactoryWithJfrogCli(projectConfig)
+                        echo "Installing LabVIEW Runtime"
+                        powershell """
+                            pushd LabVIEW_Runtime
+                            dir
+                            get-date; start-process .\\setup.exe -ArgumentList "/q /AcceptLicenses yes /r:n /log labview_runtime.log"; start-sleep -seconds 10; wait-process setup; get-date
+                            popd
+                            """                    
+                        echo "Done installing LabVIEW Runtime"
+                    }
+                }
+            }            
+        }
+
+        stage('VMT Scan 1')
         {
             agent { label "${PipelineKpcBuildAgents.GetAgentLabelExpression(projectConfig.scanAgentLabel)}" }
             steps
             {
                 script
                 {                    
-                    projectConfig.scanAgent = env.NODE_NAME
-                    projectConfig.projectScanName = projectConfig['versionInfo']['version']
-                    projectConfig.projectVersionName = projectConfig['versionInfo']['version']
-                    BlackDuckScan(projectConfig)
+                    projectConfig['jobFullName'] = "${projectConfig.projectName}-${version}-base" 
+                    powershell """
+                        start-job -Name tap -ScriptBlock { .\\bin\\Release\\tap run --ignore-load-errors -v .\\.jenkins\\test\\pause_8hours.TapPlan }
+                        start-sleep -seconds 30
+                        """
+                    NessusScan(projectConfig)
+                    powershell "remove-job tap"                        
+                }
+            }
+        }
+
+        stage('VMT Scan 2')
+        {
+            agent { label "${PipelineKpcBuildAgents.GetAgentLabelExpression(projectConfig.scanAgentLabel)}" }
+            steps
+            {
+                script
+                {   
+                    projectConfig['jobFullName'] = "${projectConfig.projectName}-${version}-diffscan" 
+                    powershell """
+                        .\\bin\\Release\\tap package install "LabVIEW Examples" -r .\\bin\\Release --version $version
+                        .\\bin\\Release\\tap package install "LabVIEW" -r .\\bin\\Release --version $version
+
+                        start-job -Name tap -ScriptBlock { .\\bin\\Release\\tap run --ignore-load-errors -v .\\.jenkins\\test\\lv_add_then_pause_8hours.TapPlan }
+                        start-sleep -seconds 30
+                        """
+                    NessusScan(projectConfig)
+                    powershell "remove-job tap"                        
                 }
             }
         }

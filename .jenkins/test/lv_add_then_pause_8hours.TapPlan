@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestPlan type="OpenTap.TestPlan">
+  <Steps>
+    <TestStep type="vi:LabVIEWExports.Add" Id="0b889dd2-d821-446c-b055-c494446094aa">
+      <ResultMembers />
+      <LogMembers>true</LogMembers>
+      <Name Metadata="Step Name">Add</Name>
+      <a>1</a>
+      <b>2</b>
+    </TestStep>
+    <TestStep type="OpenTap.Plugins.BasicSteps.DelayStep" Id="ff80cd41-a879-40fe-86b0-6d17d3d6f8d2">
+      <DelaySecs Parameter="delay">28800</DelaySecs>
+      <Name Metadata="Step Name">Delay</Name>
+    </TestStep>
+  </Steps>
+  <delay>28800</delay>
+  <Package.Dependencies>
+    <Package Name="OpenTAP" Version="^9.24.0+2569356e" />
+    <Package Name="LabVIEW Examples" Version="^0.1.0-alpha.16.36+80f061bc.25-legal-security-review-proce" />
+  </Package.Dependencies>
+</TestPlan>
