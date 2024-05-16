@@ -10,14 +10,24 @@ namespace OpenTap.LabView.Types
 {
     class LabViewTestStep : TestStep
     {
+        public class SelectedOutput
+        {
+            public string MemberName { get; set; }
+            public string DisplayName { get; set; }
+            public override string ToString()
+            {
+                return DisplayName ?? MemberName ?? "<null>";
+            }
+        }
+            
         internal readonly LabViewTypeData PluginType;
 
         readonly LabViewMemberData[] outputMembers;
-        public IEnumerable<string> AvailableOutputs => outputMembers.Select(x => x.Name);
+        public IEnumerable<SelectedOutput> AvailableOutputs => outputMembers.Select(x => new SelectedOutput{MemberName = x.Name, DisplayName = x.GetDisplayAttribute()?.Name});
         
         [Display("Publish Results", "Select which outputs or inputs should be saved as results", Group:"Utils", Order:1)]
         [AvailableValues(nameof(AvailableOutputs))]
-        public List<string> ResultMembers { get; set; } = new List<string>();
+        public List<SelectedOutput> ResultMembers { get; set; } = new List<SelectedOutput>();
         
         [Display("Log Inputs and Outputs", "Should outputs and inputs be logged?", Group:"Utils", Order:1)]
         public bool LogMembers { get; set; } = true;
@@ -87,7 +97,7 @@ namespace OpenTap.LabView.Types
 
             if (ResultMembers.Any())
             {
-                var columns = ResultMembers.Select(outp => outputMembers.FirstOrDefault(x => x.Name == outp)).Where(item => item != null)
+                var columns = ResultMembers.Select(outp => outputMembers.FirstOrDefault(x => x.Name == outp.MemberName)).Where(item => item != null)
                     .Select(item =>
                     {
                         var result = item.GetValue(this);
