@@ -18,6 +18,18 @@ namespace OpenTap.LabView.Types
             {
                 return DisplayName ?? MemberName ?? "<null>";
             }
+            public override bool Equals(object obj)
+            {
+                if (obj is SelectedOutput other)
+                    return other.MemberName == MemberName && other.DisplayName == DisplayName;
+                
+                return false;
+            }
+
+            public override int GetHashCode()
+            {
+                return (MemberName?.GetHashCode() ?? 53214) + (DisplayName?.GetHashCode() ?? 793217) * 17 +73791233;
+            }
         }
             
         internal readonly LabViewTypeData PluginType;
