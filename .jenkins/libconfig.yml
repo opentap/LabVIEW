@@ -1,3 +1,7 @@
 vault:
   defaultCredentialPath: "kv/secret/team-pwsm/opentapplugins/labview"
- 
+artifactory:
+  vaultPathForUserName: kv/secret/team-pwsm/opentapplugins/labview/username
+  vaultPathForApiToken: kv/secret/team-pwsm/opentapplugins/labview/artifactory-api-key
+  vaultPathForCredentials: kv/secret/team-pwsm/opentapplugins/labview
+  vaultPathForPass: kv/secret/team-pwsm/opentapplugins/labview/password

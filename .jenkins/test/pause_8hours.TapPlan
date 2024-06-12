@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestPlan type="OpenTap.TestPlan">
+  <Steps>
+    <TestStep type="OpenTap.Plugins.BasicSteps.DelayStep" Id="ff80cd41-a879-40fe-86b0-6d17d3d6f8d2">
+      <DelaySecs Parameter="delay">28800</DelaySecs>
+      <Name Metadata="Step Name">Delay</Name>
+    </TestStep>
+  </Steps>
+  <delay>28800</delay>
+  <Package.Dependencies>
+    <Package Name="OpenTAP" Version="^9.24.1+33856dac" />
+  </Package.Dependencies>
+</TestPlan>
