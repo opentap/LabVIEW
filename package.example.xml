@@ -9,6 +9,8 @@
       <SetAssemblyInfo Attributes="Version"/>
       <Sign Certificate="Keysight Technologies, Inc."/>
       <IgnoreDependency>NationalInstruments.LabVIEW.Interop</IgnoreDependency>
+      <IgnoreDependency>System</IgnoreDependency>
+      <IgnoreDependency>System.CodeDom</IgnoreDependency>
     </File>
     <File Path="Packages/LabVIEW Examples/OpenTap.LabView.Test1.xml" SourcePath="OpenTap.LabView.Test1.xml"/>
     <File Path="Packages/LabVIEW Examples/OpenTap.LabView.Test1/" SourcePath="Packages/LabVIEW Examples/OpenTap.LabView.Test1/**/*"/>
