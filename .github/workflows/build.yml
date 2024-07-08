@@ -84,5 +84,5 @@ jobs:
         packages: 'Repository Client:beta'
     - name: Publish Packages
       working-directory: bin/Release
-      run: tap repo upload --repository https://test-automation.pw.keysight.com/api/packages --token ${{ secrets.KS8500TOKEN }} LabVIEW*.TapPackage
+      run: tap repo upload --repository ${{ secrets.REPOURL }} --token ${{ secrets.KS8500TOKEN }} LabVIEW*.TapPackage
       
