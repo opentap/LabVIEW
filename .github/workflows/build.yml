@@ -49,6 +49,7 @@ jobs:
     - name: Build Packages
       run: |
         echo "${{ secrets.SIGN_SERVER_CERT }}" > $env:TAP_SIGN_CERT
+        echo "${{ secrets.SIGN_SERVER_CERT }}" > ${{ github.workspace }}/sign.cer
         echo "${{ secrets.SIGN_SERVER_CERT }}" > ./sign.cer
         pwd
         dir
