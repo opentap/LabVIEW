@@ -41,35 +41,20 @@ jobs:
       
     - name: Build
       run: |
-        echo "${{ secrets.SIGN_SERVER_CERT }}" > $TAP_SIGN_CERT
         dotnet build -c Release
         cd bin/Release
         mkdir Packages/LabVIEW\ Examples/
         cp -r ../../Dependency/OpenTap.LabView.Test1/ Packages/LabVIEW\ Examples/
-        
-      env:
-        TAP_SIGN_ADDRESS: ${{ secrets.TAP_SIGN_ADDRESS }}
-        TAP_SIGN_AUTH: ${{ secrets.TAP_SIGN_AUTH }}
-        TAP_SIGN_CERT: ${{ github.workspace }}/sign.cer
-        Ks8500Token: ${{secrets.KS8500TOKEN}}
-    
-    - name: Build Package
-      run: tap package create --verbose ../../package.xml
+            
+    - name: Build Packages
+      run: |
+        tap package create --verbose ../../package.xml
+        tap package create --verbose ../../package.example.xml
       working-directory: bin/Release
       env:
-        TAP_SIGN_ADDRESS: ${{ secrets.TAP_SIGN_ADDRESS }}
+        TAP_SIGN_ADDRESS: ${{ secrets.TAP_SIGN_ADDRESS_INTERNAL }}
         TAP_SIGN_AUTH: ${{ secrets.TAP_SIGN_AUTH }}
         TAP_SIGN_CERT: ${{ github.workspace }}/sign.cer
-        Ks8500Token: ${{secrets.KS8500TOKEN}}
-
-    - name: Build Example Package
-      run: tap package create --verbose ../../package.example.xml
-      working-directory: bin/Release
-      env:
-        TAP_SIGN_ADDRESS: ${{ secrets.TAP_SIGN_ADDRESS }}
-        TAP_SIGN_AUTH: ${{ secrets.TAP_SIGN_AUTH }}
-        TAP_SIGN_CERT: ${{ github.workspace }}/sign.cer
-        Ks8500Token: ${{secrets.KS8500TOKEN}}
 
     # - name: Run Unit Tests
     #  working-directory: bin/Release
