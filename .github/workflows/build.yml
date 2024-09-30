@@ -46,20 +46,11 @@ jobs:
         mkdir Packages/LabVIEW\ Examples/
         cp -r ../../Dependency/OpenTap.LabView.Test1/ Packages/LabVIEW\ Examples/
 
-    - name: Write HTTPS certificate
-      run: |
-        mkdir -p "${{ github.workspace }}"
-        echo "${{ secrets.SIGN_SERVER_CERT }}" > ${{ github.workspace }}/sign.cer
-      working-directory: ${{ github.workspace }}
     - name: Build Packages
       run: |
-        echo "${{ secrets.SIGN_SERVER_CERT }}" > $env:TAP_SIGN_CERT
-        echo "${{ secrets.SIGN_SERVER_CERT }}" > ${{ github.workspace }}/sign.cer
-        echo "${{ secrets.SIGN_SERVER_CERT }}" > ./sign.cer
-        pwd
-        dir
-        echo $(cat ./sign.cer)
-        ls -la
+        mkdir -p "${{ github.workspace }}"
+        echo "${{ secrets.SIGN_SERVER_CERT }}" > "${{ github.workspace }}/sign.cer"
+        ls -la "${{ github.workspace }}/sign.cer"
         tap package create --verbose ../../package.xml
         tap package create --verbose ../../package.example.xml
       working-directory: bin/Release
