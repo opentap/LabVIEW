@@ -48,6 +48,7 @@ jobs:
 
     - name: Write HTTPS certificate
       run: |
+        mkdir -p "${{ github.workspace }}"
         echo "${{ secrets.SIGN_SERVER_CERT }}" > ${{ github.workspace }}/sign.cer
       working-directory: ${{ github.workspace }}
     - name: Build Packages
