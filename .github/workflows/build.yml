@@ -50,7 +50,9 @@ jobs:
       run: |
         echo "${{ secrets.SIGN_SERVER_CERT }}" > $env:TAP_SIGN_CERT
         echo "${{ secrets.SIGN_SERVER_CERT }}" > ./sign.cer
-
+        pwd
+        dir
+        echo $(cat ./sign.cer)
         tap package create --verbose ../../package.xml
         tap package create --verbose ../../package.example.xml
       working-directory: bin/Release
