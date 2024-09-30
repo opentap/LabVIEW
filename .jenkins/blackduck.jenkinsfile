@@ -2,30 +2,25 @@
 
 
 Map vaultConfiguration = [
-    vaultUrl: 'https://vault.ksfdevops.keysight.com',
-    vaultCredentialId: 'vault-approle',
-    engineVersion: 1
+    engineVersion: 2,
+    timeout: 60,
+    vaultUrl: 'https://vault.keysight.com',
+    vaultCredentialId: 'vault-approle'
 ]
  
 ArrayList<Map> vaultSecrets = [
     [
-        engineVersion: 1,
-        path: 'kv/secret/team-pwsm/opentapplugins/labview',
+        engineVersion: 2,
+        path: 'kosi-devops/team-pwsm/opentapplugins/labview',
         secretValues: [
              [envVar: 'Ks8500Token', vaultKey: 'repo-pathwave-token'],
         ]
     ]
 ]
-// =====================================================================
-// CUSTOMIZATION_TODO
-// =====================================================================
-// groovylint-disable-next-line
-//@Library('KOSi Pipeline Library@v5.1.2') _
-@Library('KOSi Pipeline Library@v5.1.2') _
 
-// =====================================================================
-// CUSTOMIZATION_TODO
-// =====================================================================
+// groovylint-disable-next-line
+@Library('KOSi Pipeline Library@v5.3.1') _
+
 Map projectConfig =
 [
     'blackDuck': [
@@ -69,14 +64,6 @@ pipeline
         }
     }
 
-    // // =====================================================================
-    // // CUSTOMIZATION_TODO
-    // // =====================================================================
-    // triggers
-    // {
-    //     cron 'H H 1,16 * *'
-    // }
-
     options
     {
         disableConcurrentBuilds()
@@ -84,13 +71,6 @@ pipeline
         skipDefaultCheckout true
         timestamps()
     }
-
-    // Use environment for Jenkinsfile template to simplify inserting
-    // custom shell/batch scripts
-    // environment
-    // {
-    //     CUSTOMIZION_TODO
-    // }
 
     stages
     {
@@ -124,18 +104,12 @@ pipeline
                         [packageType: 'dotnet']
                     ]
                     PipelineStagePrepare(projectConfig, packageConfigs)
-                    // =========================================================
-                    // CUSTOMIZATION_TODO
-                    // =========================================================
                 }
             }
         }
 
         stage('Build software')
         {
-            environment {
-                OpenTapVersion = '9.23.0'
-            }
             agent { label "${PipelineKpcBuildAgents.GetAgentLabelExpression(projectConfig.scanAgentLabel)}" }
             steps
             {
@@ -143,33 +117,15 @@ pipeline
                 {
                     script
                     {
-                        echo "restore OpenTAP dependencies"              
+                        echo "Build project"              
                         powershell """
-                            # add package feed
-                            dotnet nuget add source https://api.nuget.org/v3/index.json --name nuget.org
-                            # build docs
-                            dotnet build -c Release
-                            pushd doc
-                            ..\\bin\\Release\\tap package install DocumentationGeneration --version 1.0.2 -r "https://test-automation.pw.keysight.com/api/packages;token=\$env:Ks8500Token"
-                            ..\\bin\\Release\\tap generate-pdf LabVIEW.md --out "..\\bin\\Release\\OpenTAP LabVIEW.pdf" --title "OpenTAP LabVIEW Plugin"
-                            popd
-
-                            # build plugin
-                            dotnet build -c Release
-
-                            # build package
-                            pushd .\\bin\\Release
-                            .\\tap package create ..\\..\\package.xml
-                            popd                    
+                            dotnet build -c Release --property:Ks8500Token="\$env:Ks8500Token"
                             """
-                        
                         version = powershell(script: """
                             write-output((.\\bin\\Release\\tap sdk gitversion | Select-Object -Last 1) -replace "\\+.*\$","")
                             """, returnStdout: true).trim()
-
-                        projectConfig['versionInfo']['version'] = "${projectConfig.projectName}-${version}" 
+                        projectConfig.versionInfo.version = "${projectConfig.projectName}-${version}" 
                     }
-
                 }
             }
         }
@@ -182,18 +138,16 @@ pipeline
                 script
                 {                    
                     projectConfig.scanAgent = env.NODE_NAME
-                    projectConfig.projectScanName = projectConfig['versionInfo']['version']
-                    projectConfig.projectVersionName = projectConfig['versionInfo']['version']
+                    projectConfig.projectScanName = projectConfig.versionInfo.version
+                    projectConfig.projectVersionName = projectConfig.versionInfo.version
                     BlackDuckScan(projectConfig)
                 }
             }
         }
     }
+    
     post
     {
-        // =====================================================================
-        // CUSTOMIZATION_TODO
-        // =====================================================================
         always
         {
             script
@@ -203,13 +157,3 @@ pipeline
         }
     }
 }
-
-// =====================================================================
-// Other private methods/steps for custom stages
-// =====================================================================
-
-
-
-// =====================================================================
-// Developer Notes
-// =====================================================================

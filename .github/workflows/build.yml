@@ -25,13 +25,13 @@ jobs:
     - name: Cache Packages
       uses: actions/cache@v4
       with:
-        key: '9.23.0-DocumentationGeneration1.0.2'
+        key: '9.25.1-DocumentationGeneration1.0.2-Sign1.5.0'
         path: ~/.local/share/OpenTap/PackageCache
     - name: Setup OpenTAP
       uses: opentap/setup-opentap@main
       with:
-        version: 9.23.0
-        packages: 'DocumentationGeneration:1.0.2'
+        version: 9.25.1
+        packages: 'DocumentationGeneration:1.0.2,Sign:1.5.0'
         additional-repository: 'https://test-automation.pw.keysight.com/api/packages'
         additional-repository-token: '${{ secrets.KS8500TOKEN }}'
     - name: Build Docs
@@ -52,8 +52,12 @@ jobs:
         TAP_SIGN_CERT: ${{ github.workspace }}/sign.cer
         Ks8500Token: ${{secrets.KS8500TOKEN}}
     
+    - name: Build Package
+      run: tap package create --verbose ../../package.xml
+      working-directory: bin/Release
+
     - name: Build Example Package
-      run: ./tap package create --verbose ../../package.example.xml
+      run: tap package create --verbose ../../package.example.xml
       working-directory: bin/Release
 
     # - name: Run Unit Tests
@@ -80,7 +84,7 @@ jobs:
     - name: Setup OpenTAP
       uses: opentap/setup-opentap@v1.0
       with:
-        version: 9.23.0
+        version: 9.25.1
         packages: 'Repository Client:beta'
     - name: Publish Packages
       working-directory: bin/Release

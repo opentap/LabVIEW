@@ -3,25 +3,11 @@
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
     <OpenTapPackageDefinitionPath>..\package.xml</OpenTapPackageDefinitionPath>
-    
+    <OpenTapVersion>9.25.1</OpenTapVersion>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <InternalsVisibleTo Include="OpenTap.LabView.UnitTests"/>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="OpenTAP" Version="$(OpenTapVersion)" />
-    <PackageReference Include="System.Reflection.Metadata" Version="1.6.0" />
-    <OpenTapPackageReference Include="OpenTAP"/>
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <AdditionalOpenTapPackage Include="Expressions" Version="1"/>
-    <AdditionalOpenTapPackage Include="TUI" Version="1" />
-    <AdditionalOpenTapPackage Include="Editor"/>
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <AdditionalOpenTapPackage Include="Sign" Repository="https://test-automation.pw.keysight.com/api/packages" Version="1.4.0" Token="$(Ks8500Token)"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -46,5 +32,24 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OpenTAP" Version="$(OpenTapVersion)" />
+    <PackageReference Include="System.Reflection.Metadata" Version="1.4.3" />
+    <OpenTapPackageReference Include="OpenTAP"/>
+  </ItemGroup>
+
+  <!-- Debug specific config-->
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <AdditionalOpenTapPackage Include="Expressions" Version="1"/>
+    <AdditionalOpenTapPackage Include="TUI" Version="1" />
+    <AdditionalOpenTapPackage Include="Editor"/>
+  </ItemGroup>
+
+  <!-- Release specific config -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <InstallCreatedOpenTapPackage>false</InstallCreatedOpenTapPackage>
+    <CreateOpenTapPackage>false</CreateOpenTapPackage>
+  </PropertyGroup>
 
 </Project>

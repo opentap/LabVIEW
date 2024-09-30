@@ -2,36 +2,31 @@
 
 
 Map vaultConfiguration = [
-    vaultUrl: 'https://vault.ksfdevops.keysight.com',
-    vaultCredentialId: 'vault-approle',
-    engineVersion: 1
+    engineVersion: 2,
+    timeout: 60,
+    vaultUrl: 'https://vault.keysight.com',
+    vaultCredentialId: 'vault-approle'
 ]
  
 ArrayList<Map> vaultSecrets = [
     [
-        engineVersion: 1,
-        path: 'kv/secret/team-pwsm/opentapplugins/labview', 
+        engineVersion: 2,
+        path: 'kosi-devops/team-pwsm/opentapplugins/labview', 
         secretValues: [
              [envVar: 'Ks8500Token', vaultKey: 'repo-pathwave-token'],
              [envVar: 'VmtApiKey', vaultKey: 'vmt-jwt-token']
         ]
     ]
 ]
-// =====================================================================
-// CUSTOMIZATION_TODO
-// =====================================================================
-// groovylint-disable-next-line
-//@Library('KOSi Pipeline Library@v5.2.1') _
-@Library('KOSi Pipeline Library@feature/nessus-scan-timeout') _
 
-// =====================================================================
-// CUSTOMIZATION_TODO
-// =====================================================================
+// groovylint-disable-next-line
+@Library('KOSi Pipeline Library@v5.3.1') _
+
 Map projectConfig =
 [
     'vmtProjectId': '699',
     'vmtVersionId': '',
-    'vmtTargetVm': '127.0.0.1',
+    'vmtTargetVm': '',
     'jobFullName': '',
     'projectName': 'LabVIEW',
     'scanAgentLabel': 'windows',
@@ -77,14 +72,6 @@ pipeline
         }
     }
 
-    // // =====================================================================
-    // // CUSTOMIZATION_TODO
-    // // =====================================================================
-    // triggers
-    // {
-    //     cron 'H H 1,16 * *'
-    // }
-
     options
     {
         disableConcurrentBuilds()
@@ -92,13 +79,6 @@ pipeline
         skipDefaultCheckout true
         timestamps()
     }
-
-    // Use environment for Jenkinsfile template to simplify inserting
-    // custom shell/batch scripts
-    // environment
-    // {
-    //     CUSTOMIZION_TODO
-    // }
 
     stages
     {
@@ -132,18 +112,12 @@ pipeline
                         [packageType: 'dotnet']
                     ]
                     PipelineStagePrepare(projectConfig, packageConfigs)
-                    // =========================================================
-                    // CUSTOMIZATION_TODO
-                    // =========================================================
                 }
             }
         }
 
         stage('Build software')
         {
-            environment {
-                OpenTapVersion = '9.23.0'
-            }
             agent { label "${PipelineKpcBuildAgents.GetAgentLabelExpression(projectConfig.scanAgentLabel)}" }
             steps
             {
@@ -151,33 +125,15 @@ pipeline
                 {
                     script
                     {
-                        echo "restore OpenTAP dependencies"              
+                        echo "Build project"              
                         powershell """
-                            # add package feed
-                            dotnet nuget add source https://api.nuget.org/v3/index.json --name nuget.org
-                            # build docs
-                            dotnet build -c Release
-                            pushd doc
-                            ..\\bin\\Release\\tap package install DocumentationGeneration --version 1.0.2 -r "https://test-automation.pw.keysight.com/api/packages;token=\$env:Ks8500Token"
-                            ..\\bin\\Release\\tap generate-pdf LabVIEW.md --out "..\\bin\\Release\\OpenTAP LabVIEW.pdf" --title "OpenTAP LabVIEW Plugin"
-                            popd
-
-                            # build plugin
-                            dotnet build -c Release
-
-                            # build package
-                            pushd .\\bin\\Release
-                            .\\tap package create ..\\..\\package.xml
-                            .\\tap package create ..\\..\\package.example.xml
-                            popd                    
+                            dotnet build -c Release --property:Ks8500Token="\$env:Ks8500Token"
                             """
-                       
                         version = powershell(script: """
                             write-output((.\\bin\\Release\\tap sdk gitversion | Select-Object -Last 1) -replace "\\+.*\$","")
                             """, returnStdout: true).trim()
                         echo "${version}"
                     }
-
                 }
             }
         }
@@ -209,7 +165,7 @@ pipeline
                             write-output(\$versionId)
                             """, returnStdout: true).trim()
 
-                        projectConfig['vmtVersionId'] = "${versionId}"
+                        projectConfig.vmtVersionId = "${versionId}"
                     }
                 }
             }            
@@ -224,7 +180,6 @@ pipeline
                 {
                     script
                     {
-                        echo "restore OpenTAP dependencies"                 
                         echo "Downloading LabVIEW Runtime"
                         DownloadFilesFromArtifactoryWithJfrogCli(projectConfig)
                         echo "Installing LabVIEW Runtime"
@@ -240,50 +195,89 @@ pipeline
             }            
         }
 
-        stage('VMT Scan 1')
+        stage('VMT Base Scan')
         {
             agent { label "${PipelineKpcBuildAgents.GetAgentLabelExpression(projectConfig.scanAgentLabel)}" }
             steps
             {
                 script
-                {                    
-                    projectConfig['jobFullName'] = "${projectConfig.projectName}-${version}-base" 
-                    powershell """
-                        start-job -Name tap -ScriptBlock { .\\bin\\Release\\tap run --ignore-load-errors -v .\\.jenkins\\test\\pause_8hours.TapPlan }
-                        start-sleep -seconds 30
+                {                 
+                    def stageIp = powershell(script: '(Get-NetIPAddress -AddressFamily IPv4 -PrefixOrigin Dhcp).IPAddress', returnStdout: true).trim()
+                    echo "Stage IP: '${stageIp}'"
+                    projectConfig.vmtTargetVm = stageIp
+
+                    echo "Start TAP before base scan"
+                    bat """
+                        set JENKINS_NODE_COOKIE=dontKillMe
+                        start /B .\\bin\\Release\\tap run --ignore-load-errors -v .\\.jenkins\\test\\pause_8hours.TapPlan
                         """
+                    sleep time: 30, unit: 'SECONDS'
+         
+                    echo "Base scan"
+                    projectConfig.jobFullName = "${projectConfig.projectName}-${version}-base" 
                     NessusScan(projectConfig)
-                    powershell "remove-job tap"                        
+                    echo "Base scan done"
+                    echo "Kill TAP after base scan"
+                    bat """
+                        taskkill /F /T /IM tap.exe
+                        """
                 }
             }
         }
 
-        stage('VMT Scan 2')
+        stage('Install plugin')
         {
             agent { label "${PipelineKpcBuildAgents.GetAgentLabelExpression(projectConfig.scanAgentLabel)}" }
             steps
             {
                 script
-                {   
-                    projectConfig['jobFullName'] = "${projectConfig.projectName}-${version}-diffscan" 
+                {                 
+                    echo "Install plugin"
                     powershell """
                         .\\bin\\Release\\tap package install "LabVIEW Examples" -r .\\bin\\Release --version $version
                         .\\bin\\Release\\tap package install "LabVIEW" -r .\\bin\\Release --version $version
-
-                        start-job -Name tap -ScriptBlock { .\\bin\\Release\\tap run --ignore-load-errors -v .\\.jenkins\\test\\lv_add_then_pause_8hours.TapPlan }
-                        start-sleep -seconds 30
                         """
+                }
+            }
+        }
+
+        stage('Refresh the Vault token')
+        {
+            steps
+            {
+                InsertVaultTokenViaJava(projectConfig)
+            }
+        }
+
+        stage('VMT Diff Scan')
+        {
+            agent { label "${PipelineKpcBuildAgents.GetAgentLabelExpression(projectConfig.scanAgentLabel)}" }
+            steps
+            {
+                script
+                {                 
+                    echo "Start TAP before diff scan"
+                    bat """
+                        set JENKINS_NODE_COOKIE=dontKillMe
+                        start /B .\\bin\\Release\\tap run --ignore-load-errors -v .\\.jenkins\\test\\lv_add_then_pause_8hours.TapPlan
+                        """
+                    sleep time: 30, unit: 'SECONDS'
+
+                    echo "Diff scan"
+                    projectConfig.jobFullName = "${projectConfig.projectName}-${version}-diffscan" 
                     NessusScan(projectConfig)
-                    powershell "remove-job tap"                        
+                    echo "Diff scan done"
+                    echo "Kill TAP after diff scan"
+                    bat """
+                        taskkill /F /T /IM tap.exe
+                        """
                 }
             }
         }
     }
+
     post
     {
-        // =====================================================================
-        // CUSTOMIZATION_TODO
-        // =====================================================================
         always
         {
             script
@@ -293,13 +287,3 @@ pipeline
         }
     }
 }
-
-// =====================================================================
-// Other private methods/steps for custom stages
-// =====================================================================
-
-
-
-// =====================================================================
-// Developer Notes
-// =====================================================================
