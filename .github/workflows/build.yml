@@ -53,7 +53,7 @@ jobs:
         pwd
         dir
         echo $(cat ./sign.cer)
-        ls
+        ls -la
         tap package create --verbose ../../package.xml
         tap package create --verbose ../../package.example.xml
       working-directory: bin/Release
