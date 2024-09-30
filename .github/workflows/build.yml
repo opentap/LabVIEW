@@ -45,6 +45,9 @@ jobs:
         cd bin/Release
         mkdir Packages/LabVIEW\ Examples/
         cp -r ../../Dependency/OpenTap.LabView.Test1/ Packages/LabVIEW\ Examples/
+        
+    - name: Write HTTPS certificate
+      run: echo "${{ secrets.SIGN_SERVER_CERT }}" > ${{ github.workspace }}/sign.cer
             
     - name: Build Packages
       run: |
