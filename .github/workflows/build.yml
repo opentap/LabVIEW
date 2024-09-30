@@ -9,7 +9,8 @@ env:
 
 jobs:
   build:
-    runs-on: [self-hosted, Linux]
+    runs-on: codebuild-GitHubLinuxCodebuild-${{ github.run_id }}-${{ github.run_attempt }}
+    container: ghcr.io/opentap/oci-images/build-dotnet:latest
     steps:
     - name: Checkout
       uses: actions/checkout@v4
