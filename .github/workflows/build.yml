@@ -26,19 +26,19 @@ jobs:
     - name: Cache Packages
       uses: actions/cache@v4
       with:
-        key: '9.25.1-DocumentationGeneration1.0.2-Sign1.5.0'
+        key: '9.25.1-DocumentationGeneration1.0.2'
         path: ~/.local/share/OpenTap/PackageCache
     - name: Setup OpenTAP
       uses: opentap/setup-opentap@main
       with:
         version: 9.25.1
-        packages: 'DocumentationGeneration:1.0.2,Sign:1.5.0'
+        packages: 'DocumentationGeneration:1.0.2'
         additional-repository: 'https://test-automation.pw.keysight.com/api/packages'
         additional-repository-token: '${{ secrets.KS8500TOKEN }}'
     - name: Build Docs
       run: tap generate-pdf LabVIEW.md --out ../bin/Release/OpenTAP\ LabVIEW.pdf --title "OpenTAP LabVIEW Plugin"
       working-directory: doc
-      
+    
     - name: Build
       run: |
         dotnet build -c Release
@@ -46,22 +46,37 @@ jobs:
         mkdir Packages/LabVIEW\ Examples/
         cp -r ../../Dependency/OpenTap.LabView.Test1/ Packages/LabVIEW\ Examples/
 
-    - name: Build Packages
-      run: |
-        mkdir -p "${{ github.workspace }}"
-        echo "${{ secrets.SIGN_SERVER_CERT }}" > "${{ github.workspace }}/sign.cer"
-        ls -la "${{ github.workspace }}/sign.cer"
-        tap package create --verbose ../../package.xml
-        tap package create --verbose ../../package.example.xml
-      working-directory: bin/Release
+    - name: Caching Signing tools
+      uses: actions/cache@v4
+      id: cache
+      with:
+        path: ./sign.TapPackage
+        key: ${{ runner.os }}-signpackage-1.3.0 }}
+    - name: Copy Signing tools
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: aws s3 cp s3://ks-github-runner-tools/sign.1.3.0.TapPackage ./sign.TapPackage --region eu-central-1
       env:
-        TAP_SIGN_ADDRESS: ${{ secrets.TAP_SIGN_ADDRESS_INTERNAL }}
-        TAP_SIGN_AUTH: ${{ secrets.TAP_SIGN_AUTH }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.S3_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET }}
+    - name: Install Sign
+      working-directory: bin/Release
+      run: .\tap.exe package install -f -v --no-isolation ../../sign.TapPackage        
+    - name: Write Sign Cert
+      env: 
         TAP_SIGN_CERT: ${{ github.workspace }}/sign.cer
-
-    # - name: Run Unit Tests
-    #  working-directory: bin/Release
-    #  run: ./tap unit-test run
+      run:  echo "${{ secrets.SIGN_SERVER_CERT }}" > $env:TAP_SIGN_CERT
+    - name: Create Package
+      working-directory: bin/Release
+      env: 
+        TAP_SIGN_ADDRESS: ${{ secrets.TAP_SIGN_ADDRESS_INTERNAL }}
+        TAP_SIGN_AUTH:  ${{ secrets.TAP_SIGN_AUTH }}
+        TAP_SIGN_CERT: ${{ github.workspace }}/sign.cer
+        Sign: true        
+        Platform: "Windows"
+        Architecture:  "x64"
+      run: |
+        .\tap.exe package create -v -c ../../package.xml    
+        .\tap.exe package create -v -c ../../package.example.xml
 
     - name: Upload binaries
       uses: actions/upload-artifact@v4
