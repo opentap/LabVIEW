@@ -55,9 +55,6 @@ jobs:
         TAP_SIGN_ADDRESS: ${{ secrets.TAP_SIGN_ADDRESS_INTERNAL }}
         TAP_SIGN_AUTH:  ${{ secrets.TAP_SIGN_AUTH }}
         TAP_SIGN_CERT: ${{ github.workspace }}/sign.cer
-        Sign: true        
-        Platform: "Windows"
-        Architecture:  "x64"
       run: |
         tap package create -v -c ../../package.xml    
         tap package create -v -c ../../package.example.xml
