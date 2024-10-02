@@ -1,7 +1,7 @@
 vault:
-  defaultCredentialPath: "kv/secret/team-pwsm/opentapplugins/labview"
+  defaultCredentialPath: "kosi-devops/team-pwsm/opentapplugins/labview"
 artifactory:
-  vaultPathForUserName: kv/secret/team-pwsm/opentapplugins/labview/username
-  vaultPathForApiToken: kv/secret/team-pwsm/opentapplugins/labview/artifactory-api-key
-  vaultPathForCredentials: kv/secret/team-pwsm/opentapplugins/labview
-  vaultPathForPass: kv/secret/team-pwsm/opentapplugins/labview/password
+  vaultPathForUserName: kosi-devops/team-pwsm/opentapplugins/labview/username
+  vaultPathForApiToken: kosi-devops/team-pwsm/opentapplugins/labview/artifactory-api-key
+  vaultPathForCredentials: kosi-devops/team-pwsm/opentapplugins/labview
+  vaultPathForPass: kosi-devops/team-pwsm/opentapplugins/labview/password

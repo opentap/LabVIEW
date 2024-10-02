@@ -7,9 +7,10 @@ For Version the following macro is available (Only works if the project director
 $(GitVersion) - Gets the version from Git in the recommended format Major.Minor.Build-PreRelease+CommitHash.BranchName.
 -->
 <Package Name="LabVIEW" Version="$(GitVersion)" OS="Windows,Linux,MacOS" Architecture="AnyCPU" xmlns="http://opentap.io/schemas/package">
-  <Description>This plugin adds support for loading LabVIEW plugins as OpenTAP plugins.
-    
-  </Description>
+  <Variables>
+    <Debug Condition="$(Debug) != true">false</Debug>
+  </Variables>
+  <Description>This plugin adds support for loading LabVIEW plugins as OpenTAP plugins.</Description>
   <Owner>OpenTAP</Owner>
   <Files>
     <File Path="Packages/LabVIEW/OpenTap.LabView.dll" SourcePath="OpenTap.LabView.dll">
@@ -17,7 +18,8 @@ $(GitVersion) - Gets the version from Git in the recommended format Major.Minor.
       <Sign Certificate="Keysight Technologies, Inc."/>
       <IgnoreDependency>NationalInstruments.LabVIEW.Interop</IgnoreDependency>  
     </File>
-    <File Path="Packages/LabVIEW/OpenTAP LabVIEW.pdf" SourcePath="OpenTAP LabVIEW.pdf">
-    </File>
+  </Files>
+  <Files Condition="$(Debug) == false">
+    <File Path="Packages/LabVIEW/OpenTAP LabVIEW.pdf" SourcePath="OpenTAP LabVIEW.pdf" />
   </Files>
 </Package>
