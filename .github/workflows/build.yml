@@ -59,8 +59,8 @@ jobs:
         Platform: "Windows"
         Architecture:  "x64"
       run: |
-        .\tap.exe package create -v -c ../../package.xml    
-        .\tap.exe package create -v -c ../../package.example.xml
+        ./tap package create -v -c ../../package.xml    
+        ./tap package create -v -c ../../package.example.xml
 
     - name: Upload binaries
       uses: actions/upload-artifact@v4
