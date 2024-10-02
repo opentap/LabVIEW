@@ -64,7 +64,7 @@ jobs:
     - name: Write Sign Cert
       env: 
         TAP_SIGN_CERT: ${{ github.workspace }}/sign.cer
-      run:  echo "${{ secrets.SIGN_SERVER_CERT }}" > $env:TAP_SIGN_CERT
+      run:  echo "${{ secrets.SIGN_SERVER_CERT }}" > $TAP_SIGN_CERT
     - name: Create Package
       working-directory: bin/Release
       env: 
