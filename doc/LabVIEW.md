@@ -4,13 +4,13 @@ This document describes how to use the LabVIEW OpenTAP plugin.
 
 LabVIEW is a programming language and execution environment provided by National Instruments (NI) for developing test and measurement programs using a visual interface. 
 
-A LabVIEW program consists of one or more .vi files containing LabVIEW code. Each file contains one functional unit - a VI function or a "vi", hereafter termed as a vi.
+A LabVIEW program consists of one or more .vi files containing LabVIEW code. Each file contains one functional unit - a VI function or a "VI", hereafter termed as a VI.
 
-LabVIEW is a data-flow programming language where each vi has inputs and outputs. A vi can be executed in parallel or sequentially based on need. 
+LabVIEW is a data-flow programming language where each VI has inputs and outputs. A VI can be executed in parallel or sequentially based on need. 
 
-The LabVIEW OpenTAP plugin makes it is possible to call into a vi from OpenTAP. Such calls occur by mapping each vi to an OpenTAP test step. 
+The LabVIEW OpenTAP plugin makes it is possible to call into a VI from OpenTAP. Such calls occur by mapping each VI to an OpenTAP test step. 
 
-Since a vi has inputs and outputs and a vi function call takes those inputs and emits the outputs as results,
+Since a VI has inputs and outputs and a VI function call takes those inputs and emits the outputs as results,
 they are analogous to how OpenTAP test steps function, making conversion fairly straightforward. 
 Below you can see an example of adding two numbers together in LabVIEW and how that operation appears to OpenTAP.
 
@@ -34,7 +34,7 @@ Take note of the destination directory. For easy deployment, set the deployment 
 
 ![Assembly Build Properties.png](images/Assembly_Build_Properties.png)
 
-Most other fields can be ignored, but it is crucial to specify the Source Files as illustrated below. Here you must export every vi of interest for calling directly from OpenTAP.
+Most other fields can be ignored, but it is crucial to specify the Source Files as illustrated below. Here you must export every VI of interest for calling directly from OpenTAP.
 
 ![Source Files Specification.png](images/Source_Files_Specification.png)
 
@@ -71,13 +71,13 @@ To add this information, use the Define Prototype dialog inside the LabVIEW proj
 
 ![Annotate in Define Prototype](images/AnnotateInDefinePrototype.png)
 
-In the Define Prototype dialog, the normal vi documentation can be used as is. It will be used as the test step description. A practical example can be seen below:
+In the Define Prototype dialog, the normal VI documentation can be used as is. It will be used as the test step description. A practical example can be seen below:
 
 ![Default Documentation](images/DefaultDocumentation.png)
 
 To provide a higher degree of documentation, it can be written in YAML format inside the Custom Documentation in the Define Prototype dialog.
 
-In the InputOutputAnnotation vi, the following YAML text defines the documentation:
+In the InputOutputAnnotation VI, the following YAML text defines the documentation:
 ```yaml
 Display: Input Output Annotations #The test step name you want to show the user.
 Description: This test step demonstrates how annotations can work to improve usability of a test step.
@@ -130,7 +130,7 @@ tap package create ./package.xml
 This command will generate a file called `My LabVIEW Plugin.TapPackage`. This package file can be installed on other OpenTAP installations and as long as the prerequisites are installed and working comparably to the install on your computer.
 
 
-## Supported vi Types
+## Supported VI Types
 
 Not every type that can be used as an input or output in LabVIEW works well when exported to a .NET DLL.
 Hence only a subset of LabVIEW types of inputs can be exported effectively.
@@ -159,19 +159,19 @@ The below list describes the currently working exported types:
 ### Error Clusters
 Error clusters handle errors inside LabVIEW. Many vis have no side effects and hence produce no errors, but some might.
 
-An error in a vi is represented by an error code and a message. When an vi-based test step has an error, it is handled by throwing an exception which will cause the test step to fail with an Error verdict.
+An error in a VI is represented by an error code and a message. When an VI-based test step has an error, it is handled by throwing an exception which will cause the test step to fail with an Error verdict.
 
 See the Error Handling example for a practical example.
 
 ## Debugging
 
-Debugging vi code is supported, both remotely or locally. Debugging must be enabled inside the build settings.
+Debugging VI code is supported, both remotely or locally. Debugging must be enabled inside the build settings.
 
 Right-click your build specification and select Advanced. Then click enable debugging as shown below. 
 
 ![Enabling VI Debugging](images/ViDebugging.png)
 
-Optionally select "Wait for Debugger to Launch". This will have the effect that when you execute the first vi, it will wait for the debugger to become attached.
+Optionally select "Wait for Debugger to Launch". This will have the effect that when you execute the first VI, it will wait for the debugger to become attached.
 
 After enabling debugging, the DLL must be built again. Once it has been built with debugging enabled, the ini file accompanying the DLL must be copied to the same folder as the DLL.
 The ini file can also be used to enabled and disable debugging at a later point:
