@@ -11,7 +11,7 @@ Map vaultConfiguration = [
 ArrayList<Map> vaultSecrets = [
     [
         engineVersion: 2,
-        path: 'kosi-devops/team-pwsm/opentapplugins/labview',
+        path: 'kosi-devops/team-opentapplugin/accounts/CBCI-opentapplugin',
         secretValues: [
              [envVar: 'Ks8500Token', vaultKey: 'repo-pathwave-token'],
         ]
