@@ -108,9 +108,11 @@ namespace OpenTap.LabView.Types
             {
                 IsLvClassRoot(typeof(object));
             }
-            catch
+            catch(Exception e)
             {
                 log.Error("Unable to load LabVIEW Runtime Assembly. Is LabVIEW or the LabVIEW runtime environment installed?");
+                log.Debug("Error: {0}", e.Message);
+                log.Debug(e);
             }
             var sw = Stopwatch.StartNew();
             log.Debug("Searching for LabVIEW plugins.");
